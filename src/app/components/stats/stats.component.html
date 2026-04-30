@@ -1,0 +1,10 @@
+<div class="stats-wrap">
+  <div class="stats-row">
+    @for (stat of stats; track stat.label) {
+      <div class="stat-item">
+        <div class="stat-num mono">{{ stat.value }}</div>
+        <div class="stat-label mono">{{ stat.label }}</div>
+      </div>
+    }
+  </div>
+</div>

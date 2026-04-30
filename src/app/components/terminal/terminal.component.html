@@ -1,0 +1,72 @@
+<div class="terminal">
+  <div class="term-bar">
+    <div class="dots">
+      <span class="dot red"></span>
+      <span class="dot yellow"></span>
+      <span class="dot green"></span>
+    </div>
+    <span class="term-title mono">shivam&#64;portfolio — zsh</span>
+    <button class="replay-btn mono" (click)="replay()">↺</button>
+  </div>
+
+  <div class="term-body mono">
+    <div class="login-line">Last login: Tue Apr 28 21:00:00 2026 on ttys001</div>
+
+    @for (line of lines(); track $index) {
+      @if (line.visible) {
+
+        @if (line.type === 'gap') {
+          <div class="term-gap"></div>
+        }
+
+        @else if (line.type === 'prompt') {
+          <div class="term-line">
+            <span class="t-prompt">shivam</span><span class="t-at">&#64;</span><span class="t-host">portfolio</span><span class="t-tilde"> ~ </span><span class="t-dollar">$</span>
+            <span class="t-cmd"> {{ line.displayText }}</span>
+            @if (isTypingLine($index)) { <span class="cursor-blink"></span> }
+          </div>
+        }
+
+        @else if (line.type === 'output') {
+          <div class="term-line output" [ngClass]="line.outputClass || ''">
+            {{ line.displayText }}
+          </div>
+        }
+
+        @else if (line.type === 'projects') {
+          <!-- project cards render IN SEQUENCE right after ls command -->
+          <div class="project-grid">
+            @for (p of projects; track p.name) {
+              <div class="project-card" (click)="openProject(p.url)">
+                <div class="pc-top">
+                  <span class="pc-name">{{ p.name }}/</span>
+                  <span class="pc-badge" [class.wip]="p.wip">{{ p.wip ? '◌ WIP' : '● LIVE' }}</span>
+                </div>
+                <div class="pc-url">{{ p.url }}</div>
+                <div class="pc-tech">{{ p.tech }}</div>
+              </div>
+            }
+          </div>
+        }
+
+        @else if (line.type === 'skills') {
+          <!-- skill tags render IN SEQUENCE right after skills command -->
+          <div class="skills-row">
+            @for (s of skills; track s) {
+              <span class="skill-tag">{{ s }}</span>
+            }
+          </div>
+        }
+
+      }
+    }
+
+    <!-- final cursor always at the very bottom -->
+    @if (showFinalPrompt()) {
+      <div class="term-line final-prompt">
+        <span class="t-prompt">shivam</span><span class="t-at">&#64;</span><span class="t-host">portfolio</span><span class="t-tilde"> ~ </span><span class="t-dollar">$</span>
+        <span class="cursor-blink"></span>
+      </div>
+    }
+  </div>
+</div>

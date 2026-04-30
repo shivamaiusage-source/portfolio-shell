@@ -1,0 +1,26 @@
+<nav class="navbar" [class.scrolled]="isScrolled()">
+  <div class="nav-inner">
+    <div class="nav-logo mono"><span class="logo-tilde">~/</span>shivam</div>
+    <ul class="nav-links mono">
+      @for (link of navLinks; track link.label) {
+        <li>
+          <a [href]="link.href" class="nav-link" (click)="setActive(link.label)">
+            {{ link.label }}
+          </a>
+        </li>
+      }
+    </ul>
+    <a href="mailto:shivamsinghitwork@gmail.com" class="nav-cta mono">contact.sh <span>↗</span></a>
+    <button class="mobile-toggle mono" (click)="toggleMobile()">{{ mobileOpen() ? '✕' : '☰' }}</button>
+  </div>
+  @if (mobileOpen()) {
+    <div class="mobile-menu mono">
+      @for (link of navLinks; track link.label) {
+        <a [href]="link.href" class="mobile-link" (click)="toggleMobile()">
+          {{ link.label }}
+        </a>
+      }
+      <a href="mailto:shivamsinghitwork@gmail.com" class="mobile-link cta">contact.sh ↗</a>
+    </div>
+  }
+</nav>

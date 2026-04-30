@@ -1,0 +1,19 @@
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-left mono">
+      <span class="footer-logo">~/shivam</span>
+      <span class="footer-copy">Designed and built by Shivam Singh · 2026</span>
+    </div>
+    <div class="footer-right mono">
+      @for (link of links; track link.label) {
+        <a [href]="link.href" class="footer-link" target="_blank" rel="noopener">
+          {{ link.label }} <span>↗</span>
+        </a>
+      }
+    </div>
+  </div>
+  <div class="footer-bar mono">
+    <span>shivamsingh.website</span>
+    <span>Angular 19 · Vercel · Render · Neon</span>
+  </div>
+</footer>

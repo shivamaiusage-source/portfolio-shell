@@ -1,0 +1,5 @@
+// Ensure main content sits above the body::after grid lines (z-index: 0)
+main {
+  position: relative;
+  z-index: 1;
+}

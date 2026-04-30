@@ -1,1 +1,147 @@
-/* You can add global styles to this file, and also import other style files */
+/* ============================================================
+   GLOBAL STYLES — shivamsingh.website
+   This file sets up the design system for the entire app.
+   All components inherit these variables and base styles.
+   ============================================================ */
+
+/* ── RESET
+   Remove default browser margin/padding/box-sizing so every element
+   behaves predictably across all browsers.
+   `*` targets everything, `::before` and `::after` are pseudo-elements ── */
+*, *::before, *::after {
+  box-sizing: border-box; /* Width includes padding+border, not just content */
+  margin: 0;
+  padding: 0;
+}
+
+/* ── CSS CUSTOM PROPERTIES (Design Tokens)
+   Define once here, use everywhere with var(--name).
+   Changing one variable updates the entire app instantly.
+   Interview tip: explain this as your "design token system" —
+   same concept used in large-scale apps like Material Design. ── */
+:root {
+  /* Background layers — darkest to lightest surface elevation */
+  --bg:        #0f0f1a;   /* Main page background */
+  --bg2:       #181825;   /* Card backgrounds (slightly elevated) */
+  --bg3:       #1e1e2e;   /* Terminal background */
+  --surface:   #2a2a3d;   /* Most elevated (terminal title bar) */
+
+  /* Borders */
+  --border:    #313244;   /* Default card/component borders */
+  --border2:   #ffffff11; /* Very subtle borders (section dividers) */
+
+  /* Text — from bright to very dim for visual hierarchy */
+  --text:      #cdd6f4;   /* Primary text — slightly off-white */
+  --text-muted:#6e6e8a;   /* Secondary text — descriptions, labels */
+  --text-dim:  #45475a;   /* Tertiary text — metadata, very subtle */
+
+  /* Accent colors — Catppuccin Mocha palette */
+  --green:     #a6e3a1;   /* Primary accent — live indicators, CTAs */
+  --green-dim: #1e3a2f;   /* Green bg for badges */
+  --purple:    #cba6f7;   /* Secondary accent — project names */
+  --blue:      #89b4fa;   /* Tertiary — tech tags, terminal host */
+  --cyan:      #89dceb;   /* whoami output in terminal */
+  --red:       #f38ba8;   /* Error states, Netflix project */
+  --yellow:    #f9e2af;   /* Warning / WIP states */
+
+  /* Typography */
+  --font-mono: 'JetBrains Mono', monospace; /* Terminal, code, labels */
+  --font-sans: 'Syne', sans-serif;          /* Headings, body */
+
+  /* Micro-interactions */
+  --transition: 0.2s ease; /* Consistent hover speed across all components */
+
+  /* Border radius scale */
+  --radius:    6px;   /* Buttons, tags, small elements */
+  --radius-lg: 10px;  /* Cards, terminal, containers */
+}
+
+/* ── SMOOTH SCROLLING
+   When user clicks anchor links (#projects), page scrolls smoothly ── */
+html { scroll-behavior: smooth; }
+
+/* ── BODY — Base styles ── */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-x: hidden;                  /* Prevent horizontal scroll on mobile */
+  -webkit-font-smoothing: antialiased; /* Sharper fonts on Mac/retina */
+}
+
+/* ── CUSTOM SCROLLBAR (Webkit: Chrome, Edge, Safari) ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--surface); }
+
+/* ── TEXT SELECTION — purple instead of default blue ── */
+::selection { background: var(--purple); color: var(--bg); }
+
+/* ── NOISE TEXTURE OVERLAY (body::before pseudo-element)
+   `position: fixed` + `inset: 0` = covers entire viewport always.
+   `pointer-events: none` = clicks pass through it (purely decorative).
+   The base64 SVG embeds a fractalNoise filter inline — no extra HTTP request.
+   z-index: 9999 puts it on top visually but pointer-events lets clicks through ── */
+body::before {
+  content: '';         /* Required — pseudo-elements need content to exist */
+  position: fixed;
+  inset: 0;            /* top:0; right:0; bottom:0; left:0 */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ── GRID LINE BACKGROUND (body::after pseudo-element)
+   Two layered gradients create a crosshatch grid pattern.
+   background-size controls cell size — 48px × 48px grid.
+   z-index: 0 keeps it behind all content ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border2) 1px, transparent 1px),       /* Horizontal */
+    linear-gradient(90deg, var(--border2) 1px, transparent 1px); /* Vertical */
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── UTILITY CLASSES ── */
+.mono { font-family: var(--font-mono); }
+
+.container {
+  max-width: 1100px; /* Content won't stretch past 1100px on wide screens */
+  margin: 0 auto;    /* Center horizontally */
+  padding: 0 32px;   /* Side breathing room */
+}
+
+/* ── CURSOR BLINK ANIMATION
+   @keyframes = defines an animation timeline.
+   opacity 1→0→1 at 0%, 50%, 100% creates the blink effect.
+   Used in terminal to simulate a real blinking cursor. ── */
+@keyframes blink {
+  0%,100% { opacity: 1; }
+  50%     { opacity: 0; }
+}
+.cursor-blink {
+  display: inline-block;
+  width: 8px; height: 14px;
+  background: var(--green);
+  vertical-align: text-bottom;  /* Aligns cursor baseline with text */
+  animation: blink 1s infinite; /* 1s cycle, repeats forever */
+}
+
+/* ── FADE UP ANIMATION
+   Elements start 20px below final position with opacity 0,
+   animate to natural position at opacity 1.
+   `forwards` = stays at final keyframe state after animation ends ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.6s ease forwards; }
