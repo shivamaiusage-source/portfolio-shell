@@ -1,0 +1,254 @@
+.projects-section {
+  padding: 80px 0;
+}
+
+.section-header {
+  margin-bottom: 40px;
+}
+
+.section-tag {
+  font-size: 12px;
+  color: var(--green);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.section-hint {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+// ── GRID ──
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+// ── FLIP WRAPPER ──
+.flip-wrap {
+  perspective: 1200px;
+  height: 220px;
+  cursor: pointer;
+  outline: none;
+
+  // Flip on hover (desktop)
+  &:hover .flip-inner,
+  &:focus-visible .flip-inner { transform: rotateY(180deg); }
+
+  // Flip on tap (mobile) — toggled via class
+  &.flipped .flip-inner { transform: rotateY(180deg); }
+
+  // WIP cards — slightly dimmed
+  &.wip { opacity: 0.75; }
+}
+
+// ── FLIP INNER ──
+.flip-inner {
+  position: relative;
+  width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// ── SHARED FRONT/BACK STYLES ──
+.flip-front,
+.flip-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--bg2);
+  overflow: hidden;
+}
+
+// ── TOP ACCENT BAR ──
+.flip-accent {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  border-radius: 0;
+}
+
+// ── FRONT ──
+.flip-front {
+  padding-top: 18px;
+}
+
+.flip-icon-wrap {
+  width: 40px; height: 40px;
+  border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+
+  .ti { font-size: 20px; }
+}
+
+.flip-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &.live { background: var(--green); }
+  &.wip  { background: var(--yellow); }
+}
+
+.status-text {
+  font-size: 10px;
+  letter-spacing: 0.05em;
+
+  &.live  { color: var(--green); }
+  &.wip   { color: var(--yellow); }
+}
+
+.flip-name {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.flip-tagline {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.flip-hint {
+  font-size: 10px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: auto;
+
+  .ti { font-size: 12px; }
+}
+
+// ── BACK ──
+.flip-back {
+  transform: rotateY(180deg);
+  padding-top: 18px;
+  gap: 8px;
+}
+
+.flip-back-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.flip-back-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.flip-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.flip-tag {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  color: var(--blue);
+  background: var(--bg);
+}
+
+.flip-url {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: auto;
+}
+
+.flip-cta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  width: fit-content;
+
+  .ti { font-size: 14px; }
+
+  &:hover {
+    background: var(--green-dim);
+    border-color: var(--green);
+  }
+
+  &:active { transform: scale(0.97); }
+}
+
+.flip-cta-soon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-dim);
+
+  .ti { font-size: 13px; }
+}
+
+// ── RESPONSIVE ──
+@media (max-width: 768px) {
+  .projects-section { padding: 48px 0; }
+  .section-title { font-size: 24px; }
+
+  .projects-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .flip-wrap { height: 200px; }
+
+  // On mobile, disable hover flip — only tap works
+  .flip-wrap:hover .flip-inner { transform: none; }
+  .flip-wrap.flipped .flip-inner { transform: rotateY(180deg); }
+}
+
+@media (max-width: 480px) {
+  .projects-grid { grid-template-columns: 1fr; }
+  .flip-wrap { height: 190px; }
+}

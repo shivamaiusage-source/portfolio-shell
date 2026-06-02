@@ -1,0 +1,109 @@
+<section class="projects-section" id="projects">
+  <div class="container">
+
+    <div class="section-header">
+      <span class="section-tag mono">// 03. projects</span>
+      <h2 class="section-title">Things I've Built</h2>
+      <p class="section-hint mono">tap cards to explore · hover on desktop</p>
+    </div>
+
+    <div class="projects-grid">
+      @for (p of projects; track p.slug) {
+
+        <div
+          class="flip-wrap"
+          [class.wip]="!p.live"
+          [class.flipped]="isFlipped(p.slug)"
+          (click)="toggleFlip(p.slug)"
+          role="button"
+          [attr.aria-label]="p.name + ' project card, tap to flip'"
+          tabindex="0"
+          (keydown.enter)="toggleFlip(p.slug)"
+          (keydown.space)="toggleFlip(p.slug)">
+
+          <div class="flip-inner">
+
+            <!-- FRONT — summary -->
+            <div class="flip-front">
+
+              <!-- Top accent bar -->
+              <div class="flip-accent" [style.background]="p.accentColor"></div>
+
+              <!-- Icon -->
+              <div class="flip-icon-wrap"
+                   [style.background]="p.iconBg">
+                <i class="ti {{ p.tiIcon }}"
+                   [style.color]="p.iconColor"
+                   aria-hidden="true"></i>
+              </div>
+
+              <!-- Status -->
+              <div class="flip-status">
+                @if (p.live) {
+                  <span class="status-dot live"></span>
+                  <span class="status-text live mono">Live</span>
+                } @else if (p.slug === 'coming-soon') {
+                  <span class="status-dot wip"></span>
+                  <span class="status-text wip mono">Next up</span>
+                } @else {
+                  <span class="status-dot wip"></span>
+                  <span class="status-text wip mono">In progress</span>
+                }
+              </div>
+
+              <!-- Name + tagline -->
+              <h3 class="flip-name">{{ p.name }}</h3>
+              <p class="flip-tagline">{{ p.tagline }}</p>
+
+              <!-- Hint -->
+              <div class="flip-hint mono">
+                <i class="ti ti-refresh" aria-hidden="true"></i>
+                flip for details
+              </div>
+
+            </div>
+
+            <!-- BACK — details -->
+            <div class="flip-back">
+
+              <!-- Top accent bar -->
+              <div class="flip-accent" [style.background]="p.accentColor"></div>
+
+              <h3 class="flip-back-name">{{ p.name }}</h3>
+              <p class="flip-back-desc">{{ p.desc }}</p>
+
+              <!-- Tech tags -->
+              <div class="flip-tags">
+                @for (t of p.tech; track t) {
+                  <span class="flip-tag mono">{{ t }}</span>
+                }
+              </div>
+
+              <!-- URL -->
+              <div class="flip-url mono">{{ p.url }}</div>
+
+              <!-- CTA -->
+              @if (p.live) {
+                <button
+                  class="flip-cta"
+                  (click)="openProject($event, p)"
+                  [attr.aria-label]="'Open ' + p.name + ' project'">
+                  <i class="ti ti-external-link" aria-hidden="true"></i>
+                  Open project
+                </button>
+              } @else if (p.slug !== 'coming-soon') {
+                <div class="flip-cta-soon mono">
+                  <i class="ti ti-clock" aria-hidden="true"></i>
+                  Coming soon
+                </div>
+              }
+
+            </div>
+
+          </div>
+        </div>
+      }
+    </div>
+
+  </div>
+</section>
