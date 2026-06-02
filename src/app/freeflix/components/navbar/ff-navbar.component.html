@@ -1,0 +1,51 @@
+<!-- FreeFlix navbar — fades out when user scrolls down -->
+<nav class="ff-nav" [class.hidden]="isScrolled()">
+  <div class="ff-nav-inner">
+    <a routerLink="/freeflix" class="ff-logo">FREEFLIX</a>
+
+    @if (auth.isLoggedIn()) {
+      <ul class="ff-nav-links">
+        <li><a routerLink="/freeflix" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a></li>
+        <li><a routerLink="/freeflix/browse" routerLinkActive="active">Browse</a></li>
+        <li><a routerLink="/freeflix/my-list" routerLinkActive="active">My List</a></li>
+      </ul>
+    }
+
+    <div class="ff-nav-right">
+      @if (auth.isLoggedIn()) {
+        <button class="ff-icon-btn" (click)="goToBrowse()">🔍</button>
+      }
+      @if (!auth.isLoggedIn()) {
+        <a routerLink="/freeflix/login" class="ff-signin-btn">Sign In</a>
+      } @else {
+        <div class="ff-avatar-wrap">
+          <div class="ff-avatar" (click)="toggleDropdown()">
+            {{ auth.user()?.name?.charAt(0)?.toUpperCase() }}
+          </div>
+          @if (showDropdown()) {
+            <div class="ff-dropdown">
+              <a routerLink="/freeflix/profile" (click)="showDropdown.set(false)">Profile</a>
+              <a routerLink="/freeflix/my-list" (click)="showDropdown.set(false)">My List</a>
+              <hr>
+              <button (click)="logout()">Sign Out</button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</nav>
+
+<!-- Portfolio navbar slides in when FreeFlix nav is hidden -->
+@if (isScrolled()) {
+  <nav class="portfolio-nav-mini">
+    <div class="portfolio-nav-inner">
+      <a routerLink="/" class="portfolio-logo mono">~/shivam</a>
+      <div class="portfolio-nav-links mono">
+        <a routerLink="/">portfolio</a>
+        <a routerLink="/freeflix" class="active">freeflix</a>
+      </div>
+      <a routerLink="/" class="portfolio-back mono">← back to portfolio</a>
+    </div>
+  </nav>
+}

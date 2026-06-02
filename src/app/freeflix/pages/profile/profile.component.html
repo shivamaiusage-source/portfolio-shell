@@ -1,0 +1,49 @@
+<div class="ff-page">
+  <app-ff-navbar />
+
+  <div class="profile-container">
+
+    <!-- User Info -->
+    <div class="profile-header">
+      <div class="profile-avatar">
+        {{ auth.user()?.name?.charAt(0)?.toUpperCase() }}
+      </div>
+      <div class="profile-info">
+        <h1 class="profile-name">{{ auth.user()?.name }}</h1>
+        <p class="profile-email">{{ auth.user()?.email }}</p>
+      </div>
+      <button class="logout-btn" (click)="logout()">Sign Out</button>
+    </div>
+
+    <!-- Watch History -->
+    <div class="section">
+      <h2 class="section-title">Watch History</h2>
+
+      @if (loading()) {
+        <div class="list-loading"><div class="ff-spinner"></div></div>
+      } @else if (history().length === 0) {
+        <div class="empty-state">
+          <p>No watch history yet. <a routerLink="/freeflix">Start watching!</a></p>
+        </div>
+      } @else {
+        <div class="history-list">
+          @for (item of history(); track item.id) {
+            <div class="history-item" (click)="play(item)">
+              <div class="history-thumb">🎬</div>
+              <div class="history-info">
+                <div class="history-title">{{ item.title }}</div>
+                <div class="history-meta">
+                  {{ item.genre }} •
+                  Watched on {{ formatDate(item.watched_at) }} •
+                  Progress: {{ formatProgress(item.progress_seconds) }}
+                </div>
+              </div>
+              <button class="play-btn">▶ Resume</button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+  </div>
+</div>

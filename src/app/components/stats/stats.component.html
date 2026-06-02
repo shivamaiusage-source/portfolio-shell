@@ -1,10 +1,39 @@
-<div class="stats-wrap">
-  <div class="stats-row">
-    @for (stat of stats; track stat.label) {
-      <div class="stat-item">
-        <div class="stat-num mono">{{ stat.value }}</div>
+<div class="stats-section">
+
+  <div class="stats-header">
+    <span class="stats-tag mono">// numbers that matter</span>
+    <h2 class="stats-title">By The Numbers</h2>
+  </div>
+
+  <!-- 4 stat cards -->
+  <div class="stats-grid">
+    @for (stat of stats; track stat.label; let i = $index) {
+      <div class="stat-card" [class]="stat.color">
+        <div class="stat-glow"></div>
+        <div class="stat-accent"></div>
+        <span class="stat-icon">{{ stat.icon }}</span>
+        <div class="stat-value mono">
+          {{ stat.prefix }}{{ displayValues[i] }}{{ stat.suffix }}
+        </div>
         <div class="stat-label mono">{{ stat.label }}</div>
+        <div class="stat-sub mono">{{ stat.sub }}</div>
+        <div class="stat-progress">
+          <div class="stat-progress-fill" [style.width.%]="stat.progress"></div>
+        </div>
       </div>
     }
   </div>
+
+  <!-- Skills row -->
+  <div class="skills-section">
+    <div class="skills-label mono">tech_stack</div>
+    <div class="skills-tags">
+      @for (skill of skills; track skill.label; let i = $index) {
+        <span class="skill-tag" [class]="skill.cls" [style.animation-delay]="i * 60 + 'ms'">
+          {{ skill.label }}
+        </span>
+      }
+    </div>
+  </div>
+
 </div>

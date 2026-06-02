@@ -1,0 +1,77 @@
+<div class="ff-page watch-page">
+  <app-ff-navbar />
+
+  @if (loading()) {
+    <div class="watch-loading">
+      <div class="ff-spinner"></div>
+    </div>
+  } @else if (error()) {
+    <div class="watch-error">
+      <h2>{{ error() }}</h2>
+      <a routerLink="/freeflix">← Back to Home</a>
+    </div>
+  } @else if (video()) {
+    <!-- VIDEO PLAYER -->
+    <div class="player-wrap">
+      <video
+        #videoPlayer
+        class="video-player"
+        controls
+        playsinline
+        preload="metadata">
+      </video>
+    </div>
+
+    <!-- VIDEO INFO -->
+    <div class="video-info">
+      <div class="video-info-main">
+
+        <!-- Title + Meta -->
+        <div class="video-header">
+          <h1 class="video-title">{{ video().title }}</h1>
+          <div class="video-meta">
+            <span class="meta-year">{{ video().year }}</span>
+            <span class="meta-dot">•</span>
+            <span class="meta-genre">{{ video().genre }}</span>
+            <span class="meta-dot">•</span>
+            <span class="meta-duration">{{ video().duration }}</span>
+            @if (avgRating()) {
+              <span class="meta-dot">•</span>
+              <span class="meta-rating">⭐ {{ avgRating() }}/5</span>
+            }
+          </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="video-actions">
+          <button class="action-btn" (click)="toggleMyList()">
+            <span>{{ isInMyList() ? '✓' : '+' }}</span>
+            <span>{{ isInMyList() ? 'In My List' : 'My List' }}</span>
+          </button>
+        </div>
+
+        <!-- Description -->
+        <p class="video-desc">{{ video().description }}</p>
+
+        <!-- Star Rating -->
+        <div class="rating-section">
+          <div class="rating-label">Rate this video:</div>
+          <div class="stars">
+            @for (star of [1,2,3,4,5]; track star) {
+              <button
+                class="star-btn"
+                [class.active]="star <= userRating()"
+                (click)="rate(star)">
+                ★
+              </button>
+            }
+          </div>
+          @if (userRating()) {
+            <span class="rating-feedback">You rated {{ userRating() }}/5</span>
+          }
+        </div>
+
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,70 @@
+<div class="ff-page">
+  <app-ff-navbar />
+
+  <div class="browse-container">
+    <h1 class="browse-title">Browse</h1>
+
+    <!-- Search bar -->
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        placeholder="Search titles, genres, descriptions..."
+        class="search-input"
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearch($event)"
+      />
+      @if (searchQuery) {
+        <button class="search-clear" (click)="searchQuery=''; loadVideos()">✕</button>
+      }
+    </div>
+
+    <!-- Genre filters -->
+    <div class="genre-filters">
+      @for (genre of genres; track genre) {
+        <button
+          class="genre-btn"
+          [class.active]="selectedGenre() === genre"
+          (click)="selectGenre(genre)">
+          {{ genre }}
+        </button>
+      }
+    </div>
+
+    <!-- Results -->
+    @if (loading()) {
+      <div class="browse-loading">
+        <div class="ff-spinner"></div>
+      </div>
+    } @else if (videos().length === 0) {
+      <div class="no-results">
+        <div class="no-results-icon">🎬</div>
+        <h3>No videos found</h3>
+        <p>Try a different search or genre</p>
+      </div>
+    } @else {
+      <div class="results-count">{{ videos().length }} title{{ videos().length !== 1 ? 's' : '' }} found</div>
+      <div class="video-grid">
+        @for (video of videos(); track video.id) {
+          <div class="ff-card" (click)="play(video)">
+            <div class="ff-card-thumb">
+              @if (video.thumbnail_url) {
+                <img [src]="video.thumbnail_url" [alt]="video.title" />
+              } @else {
+                <div class="ff-card-placeholder">🎬</div>
+              }
+              <div class="ff-card-overlay">
+                <span class="ff-card-play">▶</span>
+              </div>
+            </div>
+            <div class="ff-card-info">
+              <div class="ff-card-title">{{ video.title }}</div>
+              <div class="ff-card-meta">{{ video.year }} • {{ video.genre }}</div>
+              <div class="ff-card-duration">{{ video.duration }}</div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

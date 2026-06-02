@@ -1,4 +1,8 @@
-<app-navbar />
+<!-- Portfolio navbar — hidden when inside sub-projects -->
+@if (!isSubProject()) {
+  <app-navbar />
+}
+
 <main>
   <router-outlet />
 </main>

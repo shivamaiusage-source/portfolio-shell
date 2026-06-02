@@ -1,0 +1,63 @@
+<div class="ff-page">
+  <app-ff-navbar />
+
+  @if (loading()) {
+    <div class="ff-loading">
+      <div class="ff-spinner"></div>
+    </div>
+  } @else {
+
+    <!-- HERO BANNER -->
+    @if (featuredVideo()) {
+      <div class="ff-hero">
+        <div class="ff-hero-gradient"></div>
+        <div class="ff-hero-content">
+          <div class="ff-hero-badge">▶ NOW STREAMING</div>
+          <h1 class="ff-hero-title">{{ featuredVideo().title }}</h1>
+          <div class="ff-hero-meta">
+            {{ featuredVideo().year }} • {{ featuredVideo().genre }} • {{ featuredVideo().duration }}
+          </div>
+          <p class="ff-hero-desc">{{ featuredVideo().description }}</p>
+          <div class="ff-hero-btns">
+            <button class="ff-btn-play" (click)="play(featuredVideo())">
+              ▶ Play
+            </button>
+            <button class="ff-btn-info" (click)="play(featuredVideo())">
+              ℹ More Info
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- VIDEO ROWS -->
+    <div class="ff-rows">
+
+      <!-- All Videos Row -->
+      <div class="ff-row">
+        <h2 class="ff-row-title">All Videos</h2>
+        <div class="ff-row-cards">
+          @for (video of videos(); track video.id) {
+            <div class="ff-card" (click)="play(video)">
+              <div class="ff-card-thumb">
+                @if (video.thumbnail_url) {
+                  <img [src]="video.thumbnail_url" [alt]="video.title" />
+                } @else {
+                  <div class="ff-card-placeholder">🎬</div>
+                }
+                <div class="ff-card-overlay">
+                  <span class="ff-card-play">▶</span>
+                </div>
+              </div>
+              <div class="ff-card-info">
+                <div class="ff-card-title">{{ video.title }}</div>
+                <div class="ff-card-meta">{{ video.year }} • {{ video.genre }}</div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+    </div>
+  }
+</div>

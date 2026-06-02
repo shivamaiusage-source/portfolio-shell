@@ -1,10 +1,212 @@
-.stats-wrap { border-top: 1px solid var(--border2); border-bottom: 1px solid var(--border2); background: rgba(255,255,255,0.01); }
-.stats-row { max-width: 1100px; margin: 0 auto; display: flex; }
-.stat-item { flex: 1; padding: 24px 32px; text-align: center; border-right: 1px solid var(--border2); }
-.stat-item:last-child { border-right: none; }
-.stat-num { font-size: 28px; font-weight: 600; color: var(--purple); letter-spacing: -0.03em; margin-bottom: 4px; }
-.stat-label { font-size: 14px; color: var(--text-muted); letter-spacing: 0.04em; }
-@media (max-width: 600px) {
-  .stats-row { flex-wrap: wrap; }
-  .stat-item { flex: 1 1 50%; border-bottom: 1px solid var(--border2); }
+.stats-section {
+  padding: 64px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.stats-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.stats-tag {
+  font-size: 12px;
+  color: var(--green);
+  letter-spacing: 0.1em;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.stats-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+// ── STATS GRID ──
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto 24px;
+  padding: 0 32px;
+}
+
+// ── STAT CARD ──
+.stat-card {
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover { transform: translateY(-4px); }
+
+  &.purple:hover { border-color: rgba(203,166,247,0.5); box-shadow: 0 12px 32px rgba(203,166,247,0.15); }
+  &.green:hover  { border-color: rgba(166,227,161,0.5); box-shadow: 0 12px 32px rgba(166,227,161,0.15); }
+  &.blue:hover   { border-color: rgba(137,180,250,0.5); box-shadow: 0 12px 32px rgba(137,180,250,0.15); }
+  &.cyan:hover   { border-color: rgba(137,220,235,0.5); box-shadow: 0 12px 32px rgba(137,220,235,0.15); }
+}
+
+// Glow orb
+.stat-glow {
+  position: absolute;
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  top: -20px; right: -20px;
+  opacity: 0.12;
+  filter: blur(20px);
+  transition: opacity 0.3s;
+  pointer-events: none;
+
+  .purple & { background: var(--purple); }
+  .green  & { background: var(--green);  }
+  .blue   & { background: var(--blue);   }
+  .cyan   & { background: var(--cyan);   }
+
+  .stat-card:hover & { opacity: 0.28; }
+}
+
+// Top accent line
+.stat-accent {
+  height: 2px;
+  border-radius: 1px;
+  width: 40px;
+  margin-bottom: 20px;
+
+  .purple & { background: var(--purple); }
+  .green  & { background: var(--green);  }
+  .blue   & { background: var(--blue);   }
+  .cyan   & { background: var(--cyan);   }
+}
+
+.stat-icon {
+  font-size: 22px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.stat-value {
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 6px;
+  letter-spacing: -0.03em;
+
+  .purple & { color: var(--purple); }
+  .green  & { color: var(--green);  }
+  .blue   & { color: var(--blue);   }
+  .cyan   & { color: var(--cyan);   }
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.stat-sub {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 10px;
+  line-height: 1.6;
+}
+
+// Progress bar
+.stat-progress {
+  margin-top: 16px;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.stat-progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  width: 0;
+  animation: fillBar 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-delay: 0.3s;
+
+  .purple & { background: var(--purple); }
+  .green  & { background: var(--green);  }
+  .blue   & { background: var(--blue);   }
+  .cyan   & { background: var(--cyan);   }
+}
+
+@keyframes fillBar {
+  from { width: 0; }
+}
+
+// ── SKILLS SECTION ──
+.skills-section {
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-left: calc(32px + 24px);
+  padding-right: calc(32px + 24px);
+  margin-left: 32px;
+  margin-right: 32px;
+}
+
+.skills-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &::after {
+    content: '';
+    flex: 1;
+    height: 0.5px;
+    background: var(--border);
+  }
+}
+
+.skills-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-tag {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: var(--radius);
+  border: 0.5px solid;
+  animation: fadeInTag 0.4s ease forwards;
+  opacity: 0;
+
+  &.tag-purple { color: var(--purple); border-color: rgba(203,166,247,0.3); background: rgba(203,166,247,0.05); }
+  &.tag-green  { color: var(--green);  border-color: rgba(166,227,161,0.3); background: rgba(166,227,161,0.05); }
+  &.tag-blue   { color: var(--blue);   border-color: rgba(137,180,250,0.3); background: rgba(137,180,250,0.05); }
+  &.tag-cyan   { color: var(--cyan);   border-color: rgba(137,220,235,0.3); background: rgba(137,220,235,0.05); }
+  &.tag-red    { color: var(--red);    border-color: rgba(243,139,168,0.3); background: rgba(243,139,168,0.05); }
+  &.tag-yellow { color: var(--yellow); border-color: rgba(249,226,175,0.3); background: rgba(249,226,175,0.05); }
+}
+
+@keyframes fadeInTag {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1);   }
+}
+
+// ── RESPONSIVE ──
+@media (max-width: 768px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; padding: 0 20px; }
+  .skills-section { margin: 0 20px; padding: 16px; }
+  .stat-value { font-size: 32px; }
+}
+
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
 }

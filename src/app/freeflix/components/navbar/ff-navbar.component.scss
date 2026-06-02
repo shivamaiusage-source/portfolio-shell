@@ -1,0 +1,129 @@
+/* ── FREEFLIX NAVBAR ── */
+.ff-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 4%;
+  background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  opacity: 1;
+  transform: translateY(0);
+
+  /* When scrolled — slide up and fade out */
+  &.hidden {
+    opacity: 0;
+    transform: translateY(-100%);
+    pointer-events: none;
+  }
+}
+
+.ff-nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.ff-logo {
+  color: var(--ff-red);
+  font-size: 24px;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: -1px;
+  flex-shrink: 0;
+}
+
+.ff-nav-links {
+  display: flex; gap: 20px; list-style: none;
+  a {
+    color: #aaa; text-decoration: none; font-size: 14px; transition: color 0.2s;
+    &:hover, &.active { color: white; }
+  }
+}
+
+.ff-nav-right {
+  margin-left: auto; display: flex; align-items: center; gap: 16px;
+}
+
+.ff-icon-btn {
+  background: none; border: none; cursor: pointer; font-size: 18px; color: white;
+}
+
+.ff-signin-btn {
+  background: var(--ff-red); color: white; padding: 7px 16px; border-radius: 4px;
+  text-decoration: none; font-size: 14px; font-weight: 500;
+  &:hover { background: var(--ff-red-hover); }
+}
+
+.ff-avatar-wrap { position: relative; }
+
+.ff-avatar {
+  width: 32px; height: 32px; border-radius: 4px; background: var(--ff-red);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; cursor: pointer; user-select: none;
+  color: white;
+}
+
+.ff-dropdown {
+  position: absolute; top: 44px; right: 0;
+  background: rgba(0,0,0,0.95); border: 1px solid #333;
+  border-radius: 4px; min-width: 160px; padding: 8px 0;
+  a, button {
+    display: block; width: 100%; padding: 8px 16px; color: white;
+    text-decoration: none; font-size: 13px; background: none;
+    border: none; cursor: pointer; text-align: left;
+    &:hover { background: rgba(255,255,255,0.1); }
+  }
+  hr { border-color: #333; margin: 6px 0; }
+}
+
+/* ── PORTFOLIO MINI NAVBAR (slides in when scrolled) ── */
+.portfolio-nav-mini {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(15, 15, 26, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  /* Animate in from top */
+  animation: slideDown 0.4s ease forwards;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.portfolio-nav-inner {
+  max-width: 1400px; margin: 0 auto;
+  height: 56px; padding: 0 4%;
+  display: flex; align-items: center; gap: 32px;
+}
+
+.portfolio-logo {
+  font-size: 16px; font-weight: 600; color: #a6e3a1;
+  text-decoration: none;
+}
+
+.portfolio-nav-links {
+  display: flex; gap: 20px;
+  a {
+    font-size: 13px; color: #6e6e8a; text-decoration: none;
+    transition: color 0.2s;
+    &:hover { color: #cdd6f4; }
+    &.active { color: #a6e3a1; }
+  }
+}
+
+.portfolio-back {
+  margin-left: auto; font-size: 12px; color: #6e6e8a;
+  text-decoration: none; transition: color 0.2s;
+  &:hover { color: #cdd6f4; }
+}
+
+@media (max-width: 768px) {
+  .ff-nav-links { display: none; }
+  .portfolio-nav-links { display: none; }
+}

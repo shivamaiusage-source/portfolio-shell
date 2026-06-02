@@ -1,0 +1,34 @@
+<div class="ff-page">
+  <app-ff-navbar />
+
+  <div class="mylist-container">
+    <h1 class="page-title">My List</h1>
+
+    @if (loading()) {
+      <div class="list-loading"><div class="ff-spinner"></div></div>
+    } @else if (myList().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">🎬</div>
+        <h3>Your list is empty</h3>
+        <p>Add videos by clicking + on any video</p>
+        <a routerLink="/freeflix/browse" class="browse-btn">Browse Videos</a>
+      </div>
+    } @else {
+      <div class="video-grid">
+        @for (item of myList(); track item.id) {
+          <div class="ff-card">
+            <div class="ff-card-thumb" (click)="play(item)">
+              <div class="ff-card-placeholder">🎬</div>
+              <div class="ff-card-overlay"><span class="ff-card-play">▶</span></div>
+            </div>
+            <div class="ff-card-info">
+              <div class="ff-card-title">{{ item.title }}</div>
+              <div class="ff-card-meta">{{ item.genre }} • {{ item.duration }}</div>
+              <button class="remove-btn" (click)="remove(item)">✕ Remove</button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

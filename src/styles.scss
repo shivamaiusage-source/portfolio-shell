@@ -145,3 +145,24 @@ body::after {
   to   { opacity: 1; transform: translateY(0); }
 }
 .fade-up { animation: fadeUp 0.6s ease forwards; }
+
+/* ══════════════════════════════════════
+   FREEFLIX GLOBAL STYLES
+   ══════════════════════════════════════ */
+:root {
+  --ff-bg:        #141414;
+  --ff-bg2:       #1f1f1f;
+  --ff-bg3:       #2a2a2a;
+  --ff-red:       #E50914;
+  --ff-red-hover: #f40612;
+  --ff-text:      #ffffff;
+  --ff-text-muted:#aaaaaa;
+  --ff-font:      'Netflix Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.ff-page {
+  background: var(--ff-bg);
+  min-height: 100vh;
+  color: var(--ff-text);
+  font-family: var(--ff-font);
+}

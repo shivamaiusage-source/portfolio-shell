@@ -1,0 +1,24 @@
+<div class="ff-auth-page">
+  <a routerLink="/freeflix" class="ff-auth-logo">FREEFLIX</a>
+  <div class="ff-auth-box">
+    <h1>Sign Up</h1>
+
+    @if (error()) {
+      <div class="ff-auth-error">{{ error() }}</div>
+    }
+
+    <div class="ff-form">
+      <input type="text" placeholder="Full name" [(ngModel)]="name" class="ff-input" />
+      <input type="email" placeholder="Email address" [(ngModel)]="email" class="ff-input" />
+      <input type="password" placeholder="Password" [(ngModel)]="password" class="ff-input" (keyup.enter)="onSubmit()" />
+      <button class="ff-auth-btn" (click)="onSubmit()" [disabled]="loading()">
+        {{ loading() ? 'Creating account...' : 'Sign Up' }}
+      </button>
+    </div>
+
+    <div class="ff-auth-footer">
+      Already have an account?
+      <a routerLink="/freeflix/login">Sign in</a>
+    </div>
+  </div>
+</div>
