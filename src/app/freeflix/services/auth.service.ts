@@ -2,6 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 export interface User {
   id: number;
@@ -12,19 +13,13 @@ export interface User {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  // Signal holding current user — null means not logged in
   private currentUser = signal<User | null>(null);
-
-  // Computed signal — true if user is logged in
   isLoggedIn = computed(() => this.currentUser() !== null);
-
-  // Public read-only access to current user
   user = this.currentUser.asReadonly();
 
-  private apiUrl = 'http://localhost:3000/api/auth';
+  private apiUrl = environment.apiUrl + '/auth';
 
   constructor(private http: HttpClient, private router: Router) {
-    // On app start, check if token exists in localStorage
     this.loadUserFromStorage();
   }
 
@@ -47,10 +42,8 @@ export class AuthService {
   }
 
   private handleAuthResponse(res: any) {
-    // Save token and user to localStorage
     localStorage.setItem('ff_token', res.token);
     localStorage.setItem('ff_user', JSON.stringify(res.user));
-    // Update signal — triggers re-render in any component reading it
     this.currentUser.set(res.user);
   }
 
