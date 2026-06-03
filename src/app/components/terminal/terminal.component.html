@@ -36,11 +36,18 @@
         @else if (line.type === 'projects') {
           <div class="project-grid">
             @for (p of projects; track p.name) {
-              <!-- Pass full project object — router navigates internally -->
-              <div class="project-card" [class.clickable]="!p.wip" (click)="openProject(p)">
+              <div class="project-card" [class.clickable]="!p.wip" [class.wip-card]="p.wip" (click)="openProject(p)">
                 <div class="pc-top">
-                  <span class="pc-name">{{ p.name }}/</span>
-                  <span class="pc-badge" [class.wip]="p.wip">{{ p.wip ? '◌ WIP' : '● LIVE' }}</span>
+                  <div class="pc-left">
+                    <span class="pc-name">{{ p.name }}/</span>
+                    <span class="pc-badge" [class.wip]="p.wip">{{ p.wip ? '◌ WIP' : '● LIVE' }}</span>
+                  </div>
+                  <!-- View button — only on live projects -->
+                  @if (!p.wip) {
+                    <button class="pc-view-btn" (click)="openProject(p)">
+                      view <span class="pc-arrow">→</span>
+                    </button>
+                  }
                 </div>
                 <div class="pc-url">{{ p.url }}</div>
                 <div class="pc-tech">{{ p.tech }}</div>

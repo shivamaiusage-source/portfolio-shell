@@ -45,29 +45,100 @@
   animation: blink 1s infinite; margin-left: 2px;
 }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+// ── PROJECT GRID ──
 .project-grid {
   display: grid; grid-template-columns: 1fr 1fr;
   gap: 8px; margin: 8px 0 4px 2px;
 }
+
 .project-card {
   background: var(--bg2); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 10px 12px;
-  cursor: pointer; transition: border-color var(--transition);
-  &:hover { border-color: rgba(203,166,247,0.4); }
+  transition: border-color var(--transition), background var(--transition);
+
+  &.clickable { cursor: pointer; }
+  &.wip-card  { opacity: 0.6; cursor: default; }
+
+  &.clickable:hover {
+    border-color: rgba(203,166,247,0.5);
+    background: var(--bg3);
+
+    // Animate the arrow on card hover
+    .pc-arrow { transform: translateX(3px); }
+
+    // Highlight the view button
+    .pc-view-btn {
+      color: var(--green);
+      border-color: var(--green);
+      background: var(--green-dim);
+    }
+  }
 }
-.pc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
-.pc-name { color: var(--purple); font-size: 11px; font-weight: 500; }
-.pc-badge { font-size: 9px; color: var(--green); background: var(--green-dim); padding: 1px 6px; border-radius: 3px; }
-.pc-badge.wip { color: var(--yellow); background: rgba(249,226,175,0.1); }
+
+.pc-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.pc-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pc-name  { color: var(--purple); font-size: 11px; font-weight: 500; }
+.pc-badge {
+  font-size: 9px; color: var(--green);
+  background: var(--green-dim);
+  padding: 1px 6px; border-radius: 3px;
+  &.wip { color: var(--yellow); background: rgba(249,226,175,0.1); }
+}
+
+// ── VIEW BUTTON ──
+.pc-view-btn {
+  display: flex; align-items: center; gap: 3px;
+  font-size: 9px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 2px 7px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &:hover {
+    color: var(--green);
+    border-color: var(--green);
+    background: var(--green-dim);
+  }
+
+  &:active { transform: scale(0.96); }
+}
+
+.pc-arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
 .pc-url  { color: var(--text-muted); font-size: 10px; margin-bottom: 2px; }
 .pc-tech { color: var(--blue); font-size: 10px; }
+
+// ── SKILLS ──
 .skills-row { display: flex; flex-wrap: wrap; gap: 5px; margin: 6px 0 4px 2px; }
 .skill-tag {
   font-size: 10px; color: var(--blue);
   border: 1px solid var(--border); border-radius: 3px;
   padding: 2px 7px; background: var(--bg2);
 }
+
 .final-prompt { margin-top: 6px; }
+
 @media (max-width: 600px) {
   .project-grid { grid-template-columns: 1fr; }
   .term-body { font-size: 11px; padding: 12px 14px; }
