@@ -1,0 +1,80 @@
+<!-- FAB button — only on mobile -->
+<div class="chat-fab" (click)="chatService.toggle()" [class.open]="chatService.isOpen()">
+  @if (chatService.isOpen()) {
+    <span class="fab-icon">✕</span>
+  } @else {
+    <span class="fab-icon">🤖</span>
+    <span class="fab-label mono">AI Assistant</span>
+  }
+</div>
+
+<!-- Chat drawer -->
+@if (chatService.isOpen()) {
+  <div class="chat-drawer">
+    <div class="drawer-header">
+      <div class="drawer-info">
+        <span class="drawer-avatar">🤖</span>
+        <div>
+          <div class="drawer-name">Shivam's AI Assistant</div>
+          <div class="drawer-status mono">
+            @if (isTyping()) {
+              <span style="color:var(--yellow)">typing...</span>
+            } @else {
+              <span style="color:var(--green)">● online</span>
+            }
+          </div>
+        </div>
+      </div>
+      <div class="drawer-actions">
+        <a href="/rag/portfolio" class="full-chat-btn mono" target="_blank">full chat ↗</a>
+        <button class="close-btn" (click)="chatService.close()">✕</button>
+      </div>
+    </div>
+
+    <div class="drawer-messages">
+      @for (msg of messages(); track msg.timestamp) {
+        <div class="msg-row" [class.user]="msg.role === 'user'">
+          @if (msg.role === 'assistant') {
+            <span class="msg-avatar">🤖</span>
+          }
+          <div class="msg-bubble" [class.user]="msg.role === 'user'"
+               [innerHTML]="msg.content | markdown">
+          </div>
+        </div>
+      }
+
+      @if (isTyping()) {
+        <div class="msg-row">
+          <span class="msg-avatar">🤖</span>
+          <div class="msg-bubble typing">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+      }
+      <div #messagesEnd></div>
+    </div>
+
+    @if (messages().length === 1) {
+      <div class="drawer-suggestions">
+        @for (s of suggestions; track s) {
+          <button class="sug-btn" (click)="useSuggestion(s)">{{ s }}</button>
+        }
+      </div>
+    }
+
+    <div class="drawer-input">
+      <textarea
+        class="drawer-textarea"
+        placeholder="Ask anything about Shivam..."
+        [(ngModel)]="question"
+        (keydown)="onKeydown($event)"
+        rows="1"
+        [disabled]="isTyping()">
+      </textarea>
+      <button class="drawer-send" (click)="send()"
+              [disabled]="!question.trim() || isTyping()">↑</button>
+    </div>
+  </div>
+}

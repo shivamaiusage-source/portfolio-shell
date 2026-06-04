@@ -6,32 +6,33 @@ import { authInterceptor } from './freeflix/services/auth.interceptor';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-
-    // Add HTTP client + JWT interceptor
     provideHttpClient(withInterceptors([authInterceptor])),
-
-    provideRouter([
-      // Existing route — portfolio home (unchanged)
-      {
-        path: '',
-        loadComponent: () =>
-          import('./pages/home/home.component').then(m => m.HomePageComponent)
-      },
-      // New — FreeFlix lazy loaded feature
-      {
-        path: 'freeflix',
-        loadChildren: () =>
-          import('./freeflix/freeflix.routes').then(m => m.FREEFLIX_ROUTES)
-      },
-      // Fallback
-      {
-        path: '**',
-        redirectTo: ''
-      }
-    ],
-    withInMemoryScrolling({
-      scrollPositionRestoration: 'enabled',
-      anchorScrolling: 'enabled'
-    }))
+    provideRouter(
+      [
+        {
+          path: '',
+          loadComponent: () =>
+            import('./pages/home/home.component').then(m => m.HomePageComponent)
+        },
+        {
+          path: 'freeflix',
+          loadChildren: () =>
+            import('./freeflix/freeflix.routes').then(m => m.FREEFLIX_ROUTES)
+        },
+        {
+          path: 'rag',
+          loadChildren: () =>
+            import('./rag/rag.routes').then(m => m.RAG_ROUTES)
+        },
+        {
+          path: '**',
+          redirectTo: ''
+        }
+      ],
+      withInMemoryScrolling({
+        scrollPositionRestoration: 'enabled',
+        anchorScrolling: 'enabled'
+      })
+    ),
   ]
 };

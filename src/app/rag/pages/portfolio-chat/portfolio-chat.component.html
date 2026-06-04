@@ -1,0 +1,97 @@
+<div class="chat-page">
+
+  <!-- Header -->
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <a href="/" class="back-btn mono">← portfolio</a>
+      <div class="chat-avatar">🤖</div>
+      <div class="chat-info">
+        <div class="chat-name">Shivam's AI Assistant</div>
+        <div class="chat-status">
+          @if (isTyping()) {
+            <span class="status-typing">typing...</span>
+          } @else {
+            <span class="status-online">● online</span>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="chat-header-right mono">
+      <span class="powered-by">powered by Gemini 3.5</span>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div class="messages-wrap">
+    <div class="messages">
+
+      @for (msg of rag.portfolioMessages(); track msg.timestamp) {
+        <div class="msg-row" [class.user]="msg.role === 'user'">
+          @if (msg.role === 'assistant') {
+            <div class="msg-avatar">🤖</div>
+          }
+          <div class="msg-bubble" [class.user]="msg.role === 'user'">
+            <div class="msg-content" [innerHTML]="msg.content | markdown"></div>
+            <div class="msg-time mono">
+              {{ msg.timestamp | date:'HH:mm' }}
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Typing indicator -->
+      @if (isTyping()) {
+        <div class="msg-row">
+          <div class="msg-avatar">🤖</div>
+          <div class="msg-bubble typing">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+      }
+
+      <div #messagesEnd></div>
+    </div>
+
+    <!-- Suggestions — show only when just welcome message -->
+    @if (rag.portfolioMessages().length === 1) {
+      <div class="suggestions">
+        <div class="suggestions-label mono">Try asking:</div>
+        <div class="suggestions-grid">
+          @for (s of suggestions; track s) {
+            <button class="suggestion-btn" (click)="useSuggestion(s)">
+              {{ s }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Input -->
+  <div class="input-wrap">
+    <div class="input-box">
+      <textarea
+        class="chat-input"
+        placeholder="Ask anything about Shivam..."
+        [(ngModel)]="question"
+        (keydown)="onKeydown($event)"
+        rows="1"
+        [disabled]="isTyping()">
+      </textarea>
+      <button
+        class="send-btn"
+        (click)="send()"
+        [disabled]="!question.trim() || isTyping()">
+        @if (isTyping()) {
+          <span class="sending">⏳</span>
+        } @else {
+          <span>↑</span>
+        }
+      </button>
+    </div>
+    <div class="input-hint mono">Press Enter to send · Shift+Enter for new line</div>
+  </div>
+
+</div>

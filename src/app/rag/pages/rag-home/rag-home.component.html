@@ -1,0 +1,98 @@
+<div class="rag-home">
+
+  <!-- Header -->
+  <div class="rag-header">
+    <a href="/" class="back-btn mono">← portfolio</a>
+    <div class="rag-logo">
+      <span class="rag-icon">🤖</span>
+      <span class="rag-title">RAG System</span>
+    </div>
+    <span class="rag-badge mono">powered by Gemini 3.5</span>
+  </div>
+
+  <!-- Hero -->
+  <div class="rag-hero">
+    <div class="hero-tag mono">// ai powered</div>
+    <h1 class="hero-title">Ask AI anything</h1>
+    <p class="hero-desc">
+      Upload any PDF and get answers with source citations —
+      or ask about Shivam's projects and experience directly.
+    </p>
+  </div>
+
+  <!-- Two cards -->
+  <div class="rag-cards">
+
+    <!-- PDF Chat -->
+    <div class="rag-card" (click)="goTo('/rag/pdf')">
+      <div class="card-top">
+        <div class="card-icon pdf">📄</div>
+        <span class="card-arrow">→</span>
+      </div>
+      <h2 class="card-title">PDF Chat</h2>
+      <p class="card-desc">
+        Upload any PDF — contracts, notes, books, manuals.
+        Ask questions and get answers with exact source citations.
+      </p>
+      <div class="card-tech">
+        <span class="tech-tag mono">pgvector</span>
+        <span class="tech-tag mono">Gemini embeddings</span>
+        <span class="tech-tag mono">semantic search</span>
+      </div>
+      <div class="card-cta">
+        <span>Upload PDF & Chat</span>
+        <span class="cta-arrow">↗</span>
+      </div>
+    </div>
+
+    <!-- Portfolio Assistant -->
+    <div class="rag-card portfolio" (click)="goTo('/rag/portfolio')">
+      <div class="card-top">
+        <div class="card-icon portfolio">🤖</div>
+        <span class="card-arrow">→</span>
+      </div>
+      <h2 class="card-title">Portfolio Assistant</h2>
+      <p class="card-desc">
+        Ask anything about Shivam's projects, tech decisions,
+        experience and skills. Get detailed, accurate answers instantly.
+      </p>
+      <div class="card-tech">
+        <span class="tech-tag mono">grounded generation</span>
+        <span class="tech-tag mono">Gemini 3.5</span>
+        <span class="tech-tag mono">no hallucination</span>
+      </div>
+      <div class="card-cta portfolio">
+        <span>Ask Shivam's AI</span>
+        <span class="cta-arrow">↗</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- How RAG works -->
+  <div class="rag-explainer">
+    <div class="explainer-title mono">// how RAG works</div>
+    <div class="explainer-steps">
+      <div class="exp-step">
+        <div class="exp-icon">📄</div>
+        <div class="exp-label mono">PDF → chunks</div>
+      </div>
+      <div class="exp-arrow">→</div>
+      <div class="exp-step">
+        <div class="exp-icon">🔢</div>
+        <div class="exp-label mono">chunks → vectors</div>
+      </div>
+      <div class="exp-arrow">→</div>
+      <div class="exp-step">
+        <div class="exp-icon">🔍</div>
+        <div class="exp-label mono">semantic search</div>
+      </div>
+      <div class="exp-arrow">→</div>
+      <div class="exp-step">
+        <div class="exp-icon">🤖</div>
+        <div class="exp-label mono">grounded answer</div>
+      </div>
+    </div>
+  </div>
+
+</div>

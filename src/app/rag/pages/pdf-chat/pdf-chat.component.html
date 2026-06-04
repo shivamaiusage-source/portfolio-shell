@@ -1,0 +1,156 @@
+<div class="pdf-page">
+
+  <!-- Header -->
+  <div class="pdf-header">
+    <div class="header-left">
+      <a href="/rag/portfolio" class="back-btn mono">← portfolio assistant</a>
+      <div class="header-title">
+        <span class="header-icon">📄</span>
+        <div>
+          <div class="header-name">PDF Chat</div>
+          <div class="header-sub mono">Upload any PDF and ask questions</div>
+        </div>
+      </div>
+    </div>
+    @if (currentDoc()) {
+      <button class="new-btn" (click)="resetDoc()">+ New PDF</button>
+    }
+  </div>
+
+  <!-- Main content -->
+  <div class="pdf-main">
+
+    <!-- Upload area — show when no doc uploaded -->
+    @if (!currentDoc() && !isUploading()) {
+      <div class="upload-area"
+           [class.dragging]="isDragging()"
+           (dragover)="onDragOver($event)"
+           (dragleave)="onDragLeave()"
+           (drop)="onDrop($event)"
+           (click)="fileInput.click()">
+        <input #fileInput type="file" accept=".pdf" hidden (change)="onFileSelect($event)" />
+        <div class="upload-icon">📄</div>
+        <div class="upload-title">Drop your PDF here</div>
+        <div class="upload-sub mono">or click to browse</div>
+        <div class="upload-hint mono">Max 10MB · PDF only</div>
+        <div class="upload-btn">Choose PDF</div>
+      </div>
+
+      <!-- How it works -->
+      <div class="how-it-works">
+        <div class="hiw-title mono">// how it works</div>
+        <div class="hiw-steps">
+          <div class="hiw-step">
+            <span class="hiw-num">01</span>
+            <div>
+              <div class="hiw-step-title">Upload PDF</div>
+              <div class="hiw-step-desc">Any PDF up to 10MB — contracts, notes, books, manuals</div>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <span class="hiw-num">02</span>
+            <div>
+              <div class="hiw-step-title">AI indexes it</div>
+              <div class="hiw-step-desc">Gemini converts each section to semantic vectors using pgvector</div>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <span class="hiw-num">03</span>
+            <div>
+              <div class="hiw-step-title">Ask anything</div>
+              <div class="hiw-step-desc">Get answers with exact source citations from your document</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Uploading state -->
+    @if (isUploading()) {
+      <div class="uploading-state">
+        <div class="upload-spinner"></div>
+        <div class="upload-progress-text mono">{{ uploadProgress() }}</div>
+        <div class="upload-sub-text">Indexing your PDF with Gemini AI...</div>
+      </div>
+    }
+
+    <!-- Chat area — show when doc uploaded -->
+    @if (currentDoc()) {
+      <div class="chat-area">
+
+        <!-- Doc info bar -->
+        <div class="doc-bar">
+          <span class="doc-icon">📄</span>
+          <span class="doc-name">{{ currentDoc().filename }}</span>
+          <span class="doc-meta mono">{{ currentDoc().pageCount }} pages · {{ currentDoc().chunksProcessed }} sections</span>
+        </div>
+
+        <!-- Messages -->
+        <div class="messages">
+          @for (msg of messages(); track msg.timestamp) {
+            <div class="msg-row" [class.user]="msg.role === 'user'">
+              @if (msg.role === 'assistant') {
+                <div class="msg-avatar">🤖</div>
+              }
+              <div class="msg-bubble" [class.user]="msg.role === 'user'">
+                <div class="msg-content" [innerHTML]="msg.content | markdown"></div>
+
+                <!-- Sources -->
+                @if (msg.sources && msg.sources.length > 0) {
+                  <div class="sources">
+                    <div class="sources-title mono">📎 Sources</div>
+                    @for (src of msg.sources; track src.excerpt) {
+                      <div class="source-item">
+                        <span class="source-num mono">Excerpt {{ src.excerpt }}</span>
+                        <span class="source-sim mono">{{ src.similarity }}% match</span>
+                        <div class="source-text">{{ src.content }}</div>
+                      </div>
+                    }
+                  </div>
+                }
+
+                <div class="msg-time mono">{{ msg.timestamp | date:'HH:mm' }}</div>
+              </div>
+            </div>
+          }
+
+          <!-- Typing indicator -->
+          @if (isTyping()) {
+            <div class="msg-row">
+              <div class="msg-avatar">🤖</div>
+              <div class="msg-bubble typing">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+              </div>
+            </div>
+          }
+
+          <div #messagesEnd></div>
+        </div>
+
+        <!-- Input -->
+        <div class="input-wrap">
+          <div class="input-box">
+            <textarea
+              class="chat-input"
+              placeholder="Ask anything about your PDF..."
+              [(ngModel)]="question"
+              (keydown)="onKeydown($event)"
+              rows="1"
+              [disabled]="isTyping()">
+            </textarea>
+            <button
+              class="send-btn"
+              (click)="send()"
+              [disabled]="!question.trim() || isTyping()">
+              ↑
+            </button>
+          </div>
+          <div class="input-hint mono">Enter to send · Shift+Enter for new line</div>
+        </div>
+      </div>
+    }
+
+  </div>
+</div>
