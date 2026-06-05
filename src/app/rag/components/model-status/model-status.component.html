@@ -1,0 +1,41 @@
+<!-- Switching banner — slides in when model switches -->
+@if (isSwitching()) {
+  <div class="switching-banner">
+    <span class="switching-arrow">⚡</span>
+    <span class="switching-text mono">{{ switchingMessage() }}</span>
+  </div>
+}
+
+<!-- Main status bar -->
+<div class="model-status" [style.--accent]="getStatusColor()">
+
+  <!-- Pulsing dot -->
+  <div class="status-dot" [class]="'dot-' + state()" [style.background]="getStatusColor()"></div>
+
+  <!-- Icon -->
+  <div class="model-icon">{{ getIcon() }}</div>
+
+  <!-- Info -->
+  <div class="model-info">
+    <div class="model-label mono">{{ getStatusText() }}</div>
+
+    <div class="model-current">
+      @if (state() !== 'exhausted') {
+        <span class="model-name">{{ currentModel }}</span>
+      } @else {
+        <span class="model-name exhausted">All models rate limited</span>
+      }
+      <span class="model-pill mono" [style.color]="getStatusColor()">
+        {{ getStatusLabel() }}
+      </span>
+    </div>
+
+    <!-- Chain visualization -->
+    <div class="model-chain mono">
+      @for (item of chain(); track item.id; let last = $last) {
+        <span [class]="item.status">{{ item.name }}</span>
+        @if (!last) { <span class="chain-arrow">→</span> }
+      }
+    </div>
+  </div>
+</div>

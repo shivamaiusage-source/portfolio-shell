@@ -16,7 +16,11 @@
       </div>
     </div>
 
-    <!-- Model badge -->
+    <app-model-status
+      [currentModel]="currentModel()"
+      [switched]="modelSwitched()"
+      [exhausted]="false">
+    </app-model-status>
     <div class="model-badge" [class.switched]="modelSwitched()">
       <span class="model-dot"></span>
       <span class="model-name mono">{{ currentModel() }}</span>

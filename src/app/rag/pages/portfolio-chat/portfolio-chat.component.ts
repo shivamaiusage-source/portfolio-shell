@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RagService, ChatMessage } from '../../services/rag.service';
 import { MarkdownPipe } from '../../shared/pipes/markdown.pipe';
+import { ModelStatusComponent } from '../../components/model-status/model-status.component';
 
 @Component({
   selector: 'app-portfolio-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, MarkdownPipe],
+  imports: [CommonModule, FormsModule, MarkdownPipe, ModelStatusComponent],
   templateUrl: './portfolio-chat.component.html',
   styleUrl: './portfolio-chat.component.scss'
 })
