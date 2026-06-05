@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { MarkdownPipe } from '../../rag/shared/pipes/markdown.pipe';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.prod';
 import { AiChatService } from './ai-chat.service';
 
 interface Message {

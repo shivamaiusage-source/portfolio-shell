@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.prod';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface ChatMessage {
