@@ -17,6 +17,10 @@ export class PortfolioChatComponent implements OnInit, AfterViewChecked {
   rag = inject(RagService);
   question = '';
   isTyping = signal(false);
+  currentModel = signal("Gemma 4 31B");
+  modelSwitched = signal(false);
+  currentModel = signal("Gemma 4 31B");
+  modelSwitched = signal(false);
 
   suggestions = [
     "Tell me about FreeFlix",
@@ -31,7 +35,11 @@ export class PortfolioChatComponent implements OnInit, AfterViewChecked {
 
   ngOnInit() {
     if (this.rag.portfolioMessages().length === 0) {
-      this.rag.addPortfolioMessage({
+      this.currentModel.set(res.model || "Gemma 4 31B");
+        if (res.switched) { this.modelSwitched.set(true); setTimeout(() => this.modelSwitched.set(false), 3000); }
+        this.currentModel.set(res.model || "Gemma 4 31B");
+        if (res.switched) { this.modelSwitched.set(true); setTimeout(() => this.modelSwitched.set(false), 3000); }
+        this.rag.addPortfolioMessage({
         role: 'assistant',
         content: `Hi! I'm Shivam's AI portfolio assistant 👋\n\nI can answer questions about his projects, tech stack, experience, and more. Try asking me anything!`,
         timestamp: new Date()
@@ -53,7 +61,11 @@ export class PortfolioChatComponent implements OnInit, AfterViewChecked {
     const q = this.question.trim();
     if (!q || this.isTyping()) return;
 
-    this.rag.addPortfolioMessage({
+    this.currentModel.set(res.model || "Gemma 4 31B");
+        if (res.switched) { this.modelSwitched.set(true); setTimeout(() => this.modelSwitched.set(false), 3000); }
+        this.currentModel.set(res.model || "Gemma 4 31B");
+        if (res.switched) { this.modelSwitched.set(true); setTimeout(() => this.modelSwitched.set(false), 3000); }
+        this.rag.addPortfolioMessage({
       role: 'user',
       content: q,
       timestamp: new Date()
@@ -64,6 +76,10 @@ export class PortfolioChatComponent implements OnInit, AfterViewChecked {
 
     this.rag.askPortfolio(q).subscribe({
       next: (res) => {
+        this.currentModel.set(res.model || "Gemma 4 31B");
+        if (res.switched) { this.modelSwitched.set(true); setTimeout(() => this.modelSwitched.set(false), 3000); }
+        this.currentModel.set(res.model || "Gemma 4 31B");
+        if (res.switched) { this.modelSwitched.set(true); setTimeout(() => this.modelSwitched.set(false), 3000); }
         this.rag.addPortfolioMessage({
           role: 'assistant',
           content: res.answer,
@@ -72,6 +88,10 @@ export class PortfolioChatComponent implements OnInit, AfterViewChecked {
         this.isTyping.set(false);
       },
       error: () => {
+        this.currentModel.set(res.model || "Gemma 4 31B");
+        if (res.switched) { this.modelSwitched.set(true); setTimeout(() => this.modelSwitched.set(false), 3000); }
+        this.currentModel.set(res.model || "Gemma 4 31B");
+        if (res.switched) { this.modelSwitched.set(true); setTimeout(() => this.modelSwitched.set(false), 3000); }
         this.rag.addPortfolioMessage({
           role: 'assistant',
           content: 'Sorry, something went wrong. Please try again.',

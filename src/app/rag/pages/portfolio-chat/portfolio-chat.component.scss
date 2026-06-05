@@ -288,3 +288,41 @@
   &.user code { background: rgba(255,255,255,0.2); }
   &.user a { color: rgba(255,255,255,0.8); }
 }
+
+/* ── MODEL BADGE ── */
+.model-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  transition: all 0.3s;
+
+  &.switched {
+    border-color: var(--yellow);
+    background: rgba(249,226,175,0.1);
+    animation: flashModel 0.5s ease 3;
+
+    .model-dot { background: var(--yellow); }
+    .model-name { color: var(--yellow); }
+  }
+}
+
+@keyframes flashModel {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.model-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  flex-shrink: 0;
+}
+
+.model-name {
+  font-size: 10px;
+  color: var(--text-muted);
+}
