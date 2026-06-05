@@ -17,9 +17,7 @@ export class PortfolioChatComponent implements OnInit, AfterViewChecked {
   rag = inject(RagService);
   question = '';
   isTyping = signal(false);
-  currentModel = signal("Gemma 4 31B");
-  modelSwitched = signal(false);
-  currentModel = signal("Gemma 4 31B");
+  currentModel = signal('Gemini 3.1 Flash Lite');
   modelSwitched = signal(false);
 
   suggestions = [
@@ -29,57 +27,42 @@ export class PortfolioChatComponent implements OnInit, AfterViewChecked {
     "Why Cloudflare R2 over AWS S3?",
     "What did Shivam build at Songdew?",
     "Tell me about the RAG system",
-    "What is Shivam's notice period?",
     "Why Angular over React?"
   ];
 
   ngOnInit() {
     if (this.rag.portfolioMessages().length === 0) {
-      this.currentModel.set(res.model || "Gemma 4 31B");
-        if (res.switched) { this.modelSwitched.set(true); setTimeout(() => this.modelSwitched.set(false), 3000); }
-        this.currentModel.set(res.model || "Gemma 4 31B");
-        if (res.switched) { this.modelSwitched.set(true); setTimeout(() => this.modelSwitched.set(false), 3000); }
-        this.rag.addPortfolioMessage({
+      this.rag.addPortfolioMessage({
         role: 'assistant',
-        content: `Hi! I'm Shivam's AI portfolio assistant 👋\n\nI can answer questions about his projects, tech stack, experience, and more. Try asking me anything!`,
+        content: `Hi! I'm Shivam's AI portfolio assistant 👋\n\nI can answer questions about his projects, tech stack, and experience. Try asking me anything!`,
         timestamp: new Date()
       });
     }
   }
 
   ngAfterViewChecked() {
-    this.scrollToBottom();
+    try { this.messagesEnd?.nativeElement?.scrollIntoView({ behavior: 'smooth' }); } catch {}
   }
 
-  scrollToBottom() {
-    try {
-      this.messagesEnd?.nativeElement?.scrollIntoView({ behavior: 'smooth' });
-    } catch {}
-  }
-
-  async send() {
+  send() {
     const q = this.question.trim();
     if (!q || this.isTyping()) return;
 
-    this.currentModel.set(res.model || "Gemma 4 31B");
-        if (res.switched) { this.modelSwitched.set(true); setTimeout(() => this.modelSwitched.set(false), 3000); }
-        this.currentModel.set(res.model || "Gemma 4 31B");
-        if (res.switched) { this.modelSwitched.set(true); setTimeout(() => this.modelSwitched.set(false), 3000); }
-        this.rag.addPortfolioMessage({
-      role: 'user',
-      content: q,
-      timestamp: new Date()
-    });
-
+    this.rag.addPortfolioMessage({ role: 'user', content: q, timestamp: new Date() });
     this.question = '';
     this.isTyping.set(true);
 
     this.rag.askPortfolio(q).subscribe({
       next: (res) => {
-        this.currentModel.set(res.model || "Gemma 4 31B");
-        if (res.switched) { this.modelSwitched.set(true); setTimeout(() => this.modelSwitched.set(false), 3000); }
-        this.currentModel.set(res.model || "Gemma 4 31B");
-        if (res.switched) { this.modelSwitched.set(true); setTimeout(() => this.modelSwitched.set(false), 3000); }
+        // Update model badge
+        if (res.model) {
+          const prev = this.currentModel();
+          this.currentModel.set(res.model);
+          if (res.model !== prev || res.switched) {
+            this.modelSwitched.set(true);
+            setTimeout(() => this.modelSwitched.set(false), 3000);
+          }
+        }
         this.rag.addPortfolioMessage({
           role: 'assistant',
           content: res.answer,
@@ -88,10 +71,6 @@ export class PortfolioChatComponent implements OnInit, AfterViewChecked {
         this.isTyping.set(false);
       },
       error: () => {
-        this.currentModel.set(res.model || "Gemma 4 31B");
-        if (res.switched) { this.modelSwitched.set(true); setTimeout(() => this.modelSwitched.set(false), 3000); }
-        this.currentModel.set(res.model || "Gemma 4 31B");
-        if (res.switched) { this.modelSwitched.set(true); setTimeout(() => this.modelSwitched.set(false), 3000); }
         this.rag.addPortfolioMessage({
           role: 'assistant',
           content: 'Sorry, something went wrong. Please try again.',
@@ -102,15 +81,9 @@ export class PortfolioChatComponent implements OnInit, AfterViewChecked {
     });
   }
 
-  useSuggestion(s: string) {
-    this.question = s;
-    this.send();
-  }
+  useSuggestion(s: string) { this.question = s; this.send(); }
 
   onKeydown(e: KeyboardEvent) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      this.send();
-    }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.send(); }
   }
 }
