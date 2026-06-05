@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RagService, ChatMessage } from '../../services/rag.service';
 import { MarkdownPipe } from '../../shared/pipes/markdown.pipe';
+import { ModelStatusComponent } from '../../components/model-status/model-status.component';
 
 @Component({
   selector: 'app-pdf-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, MarkdownPipe],
+  imports: [CommonModule, FormsModule, MarkdownPipe, ModelStatusComponent],
   templateUrl: './pdf-chat.component.html',
   styleUrl: './pdf-chat.component.scss'
 })
@@ -24,19 +25,14 @@ export class PdfChatComponent implements AfterViewChecked {
   currentDoc = signal<any>(null);
   isDragging = signal(false);
   messages = signal<ChatMessage[]>([]);
+  currentModel = signal('Gemini 3.1 Flash Lite');
+  modelSwitched = signal(false);
 
   ngAfterViewChecked() {
-    try {
-      this.messagesEnd?.nativeElement?.scrollIntoView({ behavior: 'smooth' });
-    } catch {}
+    try { this.messagesEnd?.nativeElement?.scrollIntoView({ behavior: 'smooth' }); } catch {}
   }
 
-  // Drag and drop
-  onDragOver(e: DragEvent) {
-    e.preventDefault();
-    this.isDragging.set(true);
-  }
-
+  onDragOver(e: DragEvent) { e.preventDefault(); this.isDragging.set(true); }
   onDragLeave() { this.isDragging.set(false); }
 
   onDrop(e: DragEvent) {
@@ -52,14 +48,8 @@ export class PdfChatComponent implements AfterViewChecked {
   }
 
   handleFile(file: File) {
-    if (file.type !== 'application/pdf') {
-      alert('Please upload a PDF file only');
-      return;
-    }
-    if (file.size > 10 * 1024 * 1024) {
-      alert('File too large. Maximum size is 10MB');
-      return;
-    }
+    if (file.type !== 'application/pdf') { alert('Please upload a PDF file only'); return; }
+    if (file.size > 10 * 1024 * 1024) { alert('File too large. Maximum size is 10MB'); return; }
     this.uploadPdf(file);
   }
 
@@ -73,8 +63,6 @@ export class PdfChatComponent implements AfterViewChecked {
         this.isUploading.set(false);
         this.currentDoc.set(res);
         this.uploadProgress.set('');
-
-        // Welcome message after upload
         this.messages.update(msgs => [...msgs, {
           role: 'assistant',
           content: `✅ **${res.filename}** uploaded successfully!\n\n📄 **${res.pageCount} pages** · **${res.chunksProcessed} sections** indexed\n\nAsk me anything about this document!`,
@@ -93,17 +81,21 @@ export class PdfChatComponent implements AfterViewChecked {
     const q = this.question.trim();
     if (!q || this.isTyping() || !this.currentDoc()) return;
 
-    this.messages.update(msgs => [...msgs, {
-      role: 'user',
-      content: q,
-      timestamp: new Date()
-    }]);
-
+    this.messages.update(msgs => [...msgs, { role: 'user', content: q, timestamp: new Date() }]);
     this.question = '';
     this.isTyping.set(true);
 
     this.rag.askPdf(q).subscribe({
       next: (res) => {
+        // Update model status
+        if (res.model) {
+          const prev = this.currentModel();
+          this.currentModel.set(res.model);
+          if (res.switched || res.model !== prev) {
+            this.modelSwitched.set(true);
+            setTimeout(() => this.modelSwitched.set(false), 3000);
+          }
+        }
         this.messages.update(msgs => [...msgs, {
           role: 'assistant',
           content: res.answer,
@@ -124,10 +116,7 @@ export class PdfChatComponent implements AfterViewChecked {
   }
 
   onKeydown(e: KeyboardEvent) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      this.send();
-    }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.send(); }
   }
 
   resetDoc() {
