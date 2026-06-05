@@ -371,3 +371,15 @@
   color: var(--yellow);
   font-weight: 600;
 }
+
+@media (max-width: 768px) {
+  .chat-header {
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px 14px;
+  }
+
+  .chat-header-left { width: 100%; }
+
+  app-model-status { width: 100%; }
+}

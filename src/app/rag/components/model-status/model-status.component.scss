@@ -227,3 +227,20 @@
     color: #45475a;
   }
 }
+
+/* ── MOBILE FIXES ── */
+@media (max-width: 768px) {
+  .model-status {
+    padding: 6px 10px;
+  }
+
+  .model-chain { display: none; } /* hide chain on mobile — too crowded */
+
+  .model-label { display: none; } /* hide label on mobile */
+
+  .model-name { font-size: 11px; }
+
+  .model-pill { font-size: 8px; padding: 1px 6px; }
+
+  .switching-banner { display: none; } /* hide on mobile */
+}

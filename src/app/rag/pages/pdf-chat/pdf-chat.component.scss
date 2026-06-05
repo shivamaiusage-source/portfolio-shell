@@ -341,3 +341,17 @@
   .messages { padding: 12px; }
   .msg-bubble { max-width: 88%; }
 }
+
+@media (max-width: 768px) {
+  .pdf-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 14px;
+  }
+
+  .header-left { width: 100%; }
+
+  app-model-status { width: 100%; }
+
+  .new-btn { margin-left: auto; }
+}
