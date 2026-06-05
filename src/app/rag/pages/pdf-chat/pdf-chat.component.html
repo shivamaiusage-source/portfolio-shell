@@ -12,6 +12,13 @@
         </div>
       </div>
     </div>
+
+    <app-model-status
+      [currentModel]="currentModel()"
+      [switched]="modelSwitched()"
+      [exhausted]="false">
+    </app-model-status>
+
     @if (currentDoc()) {
       <button class="new-btn" (click)="resetDoc()">+ New PDF</button>
     }
