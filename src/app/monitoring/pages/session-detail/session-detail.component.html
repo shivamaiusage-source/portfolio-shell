@@ -1,0 +1,198 @@
+<div class="detail-shell">
+
+  @if (isLoading()) {
+    <div class="loading">
+      <div class="spin"></div>
+      <span>Loading session...</span>
+    </div>
+  } @else if (!session()) {
+    <div class="loading">
+      <i class="ti ti-alert-circle" style="font-size:32px;color:#A32D2D"></i>
+      <span>Session not found</span>
+      <button (click)="goBack()">← Back</button>
+    </div>
+  } @else {
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="tb-left">
+        <button class="back-btn" (click)="goBack()">
+          <i class="ti ti-arrow-left"></i> Sessions
+        </button>
+        <div>
+          <div class="tb-id-row">
+            <span class="tb-id">{{ session()!.id.slice(0,8) }}...{{ session()!.id.slice(-6) }}</span>
+            <span class="apill" [class]="'ap-' + session()!.app.toLowerCase()">
+              {{ session()!.app }}
+            </span>
+          </div>
+          <div class="tb-sub">
+            {{ formatTime(session()!.started_at) }} ·
+            {{ getBrowser(session()!.user_agent) }} ·
+            {{ session()!.screen_w }}×{{ session()!.screen_h }}
+          </div>
+        </div>
+      </div>
+      <div class="tb-chips">
+        <div class="chip">
+          <i class="ti ti-clock"></i>
+          {{ formatDuration(session()!.duration_ms) }}
+        </div>
+        <div class="chip">
+          <i class="ti ti-click"></i>
+          {{ session()!.click_count }} clicks
+        </div>
+        <div class="chip">
+          <i class="ti ti-map-pin"></i>
+          {{ session()!.page_count }} pages
+        </div>
+        @if (session()!.error_count === 0) {
+          <div class="chip success">
+            <i class="ti ti-check"></i> No errors
+          </div>
+        } @else {
+          <div class="chip danger">
+            <i class="ti ti-alert-circle"></i>
+            {{ session()!.error_count }} errors
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="body">
+
+      <!-- Left column -->
+      <div class="left-col">
+
+        <!-- Event timeline -->
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-title">Event timeline</div>
+            <div class="tl-legend">
+              <div class="leg-item"><div class="leg-dot" style="background:#378ADD"></div>nav</div>
+              <div class="leg-item"><div class="leg-dot" style="background:#7F77DD"></div>click</div>
+              <div class="leg-item"><div class="leg-dot" style="background:#1D9E75"></div>scroll</div>
+              <div class="leg-item"><div class="leg-dot" style="background:#9ca3af"></div>dom</div>
+              @if (session()!.error_count > 0) {
+                <div class="leg-item"><div class="leg-dot" style="background:#E24B4A"></div>error</div>
+              }
+            </div>
+          </div>
+
+          <div class="tl-track">
+            @for (e of events(); track e.id) {
+              <div class="tl-dot"
+                   [style.left]="dotLeft(e.ts) + '%'"
+                   [style.background]="dotColor(e.type)"
+                   [title]="e.type + ': ' + (e.target || '')">
+              </div>
+            }
+          </div>
+
+          <div class="tl-labels">
+            @for (label of timeLabels(); track label) {
+              <span>{{ label }}</span>
+            }
+          </div>
+        </div>
+
+        <!-- Navigation path -->
+        @if (navEvents().length > 0) {
+          <div class="section-card">
+            <div class="card-header">
+              <div class="card-title">Navigation path</div>
+              <div class="card-count">{{ navEvents().length }} pages</div>
+            </div>
+            <div class="nav-flow">
+              @for (e of navEvents(); track e.id; let last = $last) {
+                <div class="nav-step" [class.first]="$first">
+                  <i class="ti" [class]="$first ? 'ti-home' : 'ti-arrow-right'"
+                     style="font-size:11px"></i>
+                  <span>{{ e.target || '/' }}</span>
+                </div>
+                @if (!last) {
+                  <div class="nav-arr">→</div>
+                }
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Click map -->
+        @if (clickEvents().length > 0) {
+          <div class="section-card">
+            <div class="card-header">
+              <div class="card-title">Click map</div>
+              <div class="card-count">{{ clickEvents().length }} clicks</div>
+            </div>
+            <div class="click-map">
+              <div class="screen-frame">
+                <div class="screen-label mono">{{ session()!.screen_w }}×{{ session()!.screen_h }}</div>
+              </div>
+              @for (e of clickEvents(); track e.id) {
+                <div class="click-dot"
+                     [style.left]="clickX(e) + '%'"
+                     [style.top]="clickY(e) + '%'"
+                     [title]="e.target || ''">
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+      </div>
+
+      <!-- Right column: Event list -->
+      <div class="right-col">
+        <div class="ev-header">
+          <div class="ev-title">
+            Events
+            <span class="ev-count">{{ filteredEvents().length }}</span>
+          </div>
+          <div class="ev-filters">
+            <button class="evf" [class.on]="activeFilter() === 'all'"
+                    (click)="setFilter('all')">All</button>
+            <button class="evf" [class.on]="activeFilter() === 'click'"
+                    (click)="setFilter('click')">Clicks</button>
+            <button class="evf" [class.on]="activeFilter() === 'nav'"
+                    (click)="setFilter('nav')">Nav</button>
+            <button class="evf" [class.on]="activeFilter() === 'scroll'"
+                    (click)="setFilter('scroll')">Scroll</button>
+            <button class="evf evf-err" [class.on]="activeFilter() === 'error'"
+                    (click)="setFilter('error')">Errors</button>
+          </div>
+        </div>
+
+        <div class="ev-list">
+          @for (e of filteredEvents(); track e.id; let i = $index) {
+            <div class="ev-item" [class.ev-err]="e.type === 'error'"
+                 [style.animation-delay]="(i * 0.03) + 's'">
+              <div class="ev-icon" [class]="iconClass(e.type)">
+                <i class="ti" [class]="dotIcon(e.type)"></i>
+              </div>
+              <div class="ev-info">
+                <div class="ev-type">{{ e.type }}</div>
+                @if (e.target) {
+                  <div class="ev-target">{{ e.target }}</div>
+                }
+                @if (e.type === 'error' && e.value?.message) {
+                  <div class="ev-error-msg">{{ e.value.message }}</div>
+                }
+                @if (e.type === 'scroll' && e.value?.depth !== undefined) {
+                  <div class="ev-target">{{ e.value.depth }}% depth</div>
+                }
+              </div>
+              <div class="ev-ts mono">{{ formatTs(e.ts) }}</div>
+            </div>
+          }
+
+          @if (filteredEvents().length === 0) {
+            <div class="ev-empty">No {{ activeFilter() }} events in this session</div>
+          }
+        </div>
+      </div>
+
+    </div>
+  }
+</div>

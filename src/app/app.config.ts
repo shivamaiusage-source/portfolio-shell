@@ -20,6 +20,11 @@ export const appConfig: ApplicationConfig = {
             import('./freeflix/freeflix.routes').then(m => m.FREEFLIX_ROUTES)
         },
         {
+          path: 'monitoring',
+          loadChildren: () =>
+            import('./monitoring/monitoring.routes').then(m => m.MONITORING_ROUTES)
+        },
+        {
           path: 'rag',
           loadChildren: () =>
             import('./rag/rag.routes').then(m => m.RAG_ROUTES)
