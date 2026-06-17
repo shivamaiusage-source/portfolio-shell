@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { AiChatComponent } from './components/ai-chat/ai-chat.component';
@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
+import { SeoService } from './services/seo.service';
 
 @Component({
   selector: 'app-root',
@@ -14,8 +15,9 @@ import { map } from 'rxjs/operators';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
-  private router = inject(Router);
+export class AppComponent implements OnInit {
+  private router    = inject(Router);
+  private seoService = inject(SeoService);
 
   isSubProject = toSignal(
     this.router.events.pipe(
@@ -29,4 +31,8 @@ export class AppComponent {
     ),
     { initialValue: false }
   );
+
+  ngOnInit() {
+    this.seoService.init();
+  }
 }

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    width: 1200px; height: 630px;
+    background: #1e1e2e;
+    font-family: 'Segoe UI', monospace;
+    display: flex; align-items: center;
+    overflow: hidden;
+  }
+  .left {
+    padding: 60px;
+    flex: 1;
+  }
+  .tag { font-size: 18px; color: #a6e3a1; font-family: monospace; margin-bottom: 20px; }
+  .name { font-size: 64px; font-weight: 700; color: #cdd6f4; line-height: 1.1; margin-bottom: 12px; }
+  .role { font-size: 28px; color: #6c7086; margin-bottom: 40px; }
+  .projects { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
+  .proj { background: #313244; border-radius: 8px; padding: 10px 20px; font-size: 18px; color: #cba6f7; border: 1px solid #45475a; }
+  .proj.live::after { content: ' ●'; color: #a6e3a1; font-size: 12px; }
+  .skills { display: flex; gap: 10px; flex-wrap: wrap; }
+  .skill { font-size: 15px; color: #6c7086; background: #181825; border-radius: 6px; padding: 6px 14px; }
+  .right {
+    width: 360px;
+    padding: 60px 60px 60px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 100%;
+  }
+  .avatar {
+    width: 120px; height: 120px;
+    background: #313244;
+    border-radius: 50%;
+    border: 3px solid #cba6f7;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px;
+  }
+  .url { font-size: 20px; color: #45475a; font-family: monospace; }
+  .open { font-size: 20px; color: #a6e3a1; background: rgba(166,227,161,0.1); padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(166,227,161,0.3); }
+</style>
+</head>
+<body>
+  <div class="left">
+    <div class="tag">~/portfolio $</div>
+    <div class="name">Shivam Singh</div>
+    <div class="role">Senior Angular Developer</div>
+    <div class="projects">
+      <div class="proj live">FreeFlix</div>
+      <div class="proj live">RAG System</div>
+      <div class="proj live">Monitoring</div>
+    </div>
+    <div class="skills">
+      <div class="skill">Angular 19</div>
+      <div class="skill">TypeScript</div>
+      <div class="skill">Node.js</div>
+      <div class="skill">Gemini AI</div>
+      <div class="skill">pgvector</div>
+    </div>
+  </div>
+  <div class="right">
+    <div class="avatar">👨‍💻</div>
+    <div>
+      <div class="open">Open to work</div>
+      <div class="url" style="margin-top:12px">shivamsingh.website</div>
+    </div>
+  </div>
+</body>
+</html>
