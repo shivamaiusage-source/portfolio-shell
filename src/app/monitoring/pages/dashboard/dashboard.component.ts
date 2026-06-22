@@ -1,13 +1,12 @@
-import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Component, OnInit, OnDestroy, signal, inject, computed } from '@angular/core';
+import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { Router } from '@angular/router';
 import { MonitoringService, MonSession, MonStats } from '../../services/monitoring.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, NgTemplateOutlet],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -21,6 +20,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   isLoading = signal(true);
   selectedApp = signal('');
   errorsOnly = signal(false);
+  activeView = signal<'overview' | 'sessions' | 'errors'>('overview');
   refreshTimer: any;
 
   apps = [
@@ -28,17 +28,34 @@ export class DashboardComponent implements OnInit, OnDestroy {
     { label: 'Portfolio', value: 'Portfolio' },
     { label: 'FreeFlix', value: 'FreeFlix' },
     { label: 'RAG', value: 'RAG' },
+    { label: 'Monitoring', value: 'Monitoring' },
   ];
+
+  viewTitle = computed(() => {
+    switch (this.activeView()) {
+      case 'sessions': return 'All Sessions';
+      case 'errors':   return 'Error Sessions';
+      default:         return 'Overview';
+    }
+  });
+
+  appDist = computed(() => {
+    const s = this.stats();
+    if (!s) return [];
+    return [
+      { name: 'Portfolio',  count: s.portfolio_sessions,  color: 'blue' },
+      { name: 'FreeFlix',   count: s.freeflix_sessions,   color: 'purple' },
+      { name: 'RAG',        count: s.rag_sessions,        color: 'teal' },
+      { name: 'Monitoring', count: s.monitoring_sessions || '0', color: 'amber' },
+    ];
+  });
 
   ngOnInit() {
     this.loadAll();
-    // Auto refresh every 30 seconds
     this.refreshTimer = setInterval(() => this.loadAll(), 30000);
   }
 
-  ngOnDestroy() {
-    clearInterval(this.refreshTimer);
-  }
+  ngOnDestroy() { clearInterval(this.refreshTimer); }
 
   loadAll() {
     this.loadStats();
@@ -64,6 +81,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  setView(view: 'overview' | 'sessions' | 'errors') {
+    this.activeView.set(view);
+    if (view === 'errors') {
+      this.errorsOnly.set(true);
+    } else {
+      this.errorsOnly.set(false);
+    }
+    this.loadSessions();
+  }
+
   setFilter(app: string) {
     this.selectedApp.set(app);
     this.loadSessions();
@@ -82,8 +109,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (!ms || ms <= 0) return '0s';
     const s = Math.floor(ms / 1000);
     if (s < 60) return `${s}s`;
-    const m = Math.floor(s / 60);
-    return `${m}m ${s % 60}s`;
+    return `${Math.floor(s / 60)}m ${s % 60}s`;
   }
 
   formatTime(iso: string): string {
@@ -100,12 +126,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   maxSessions(): number {
     const s = this.stats();
     if (!s) return 1;
-    return Math.max(
-      +s.portfolio_sessions,
-      +s.freeflix_sessions,
-      +s.rag_sessions,
-      1
-    );
+    return Math.max(+s.portfolio_sessions, +s.freeflix_sessions, +s.rag_sessions, 1);
   }
 
   barWidth(count: string): string {
@@ -113,10 +134,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   getBrowser(ua: string): string {
-    if (ua.includes('Chrome')) return 'Chrome';
-    if (ua.includes('Firefox')) return 'Firefox';
-    if (ua.includes('Safari')) return 'Safari';
-    if (ua.includes('Edge')) return 'Edge';
+    if (ua?.includes('Chrome')) return 'Chrome';
+    if (ua?.includes('Firefox')) return 'Firefox';
+    if (ua?.includes('Safari')) return 'Safari';
+    if (ua?.includes('Edge')) return 'Edge';
     return 'Unknown';
   }
 }

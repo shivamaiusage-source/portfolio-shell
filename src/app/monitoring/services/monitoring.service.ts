@@ -35,6 +35,7 @@ export interface MonStats {
   avg_duration_ms: string;
   freeflix_sessions: string;
   rag_sessions: string;
+  monitoring_sessions: string;
   portfolio_sessions: string;
 }
 

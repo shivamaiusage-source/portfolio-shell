@@ -9,45 +9,58 @@
 
     <nav class="sb-nav">
       <div class="sb-section">Analytics</div>
-      <a class="sb-item active" routerLink="/monitoring">
+      <div class="sb-item" [class.active]="activeView() === 'overview'"
+           (click)="setView('overview')">
         <i class="ti ti-layout-dashboard"></i>
         <span>Overview</span>
         <span class="sb-badge">{{ total() }}</span>
-      </a>
-      <a class="sb-item" routerLink="/monitoring">
+      </div>
+      <div class="sb-item" [class.active]="activeView() === 'sessions'"
+           (click)="setView('sessions')">
         <i class="ti ti-users"></i>
         <span>Sessions</span>
-      </a>
-      <a class="sb-item" routerLink="/monitoring">
-        <i class="ti ti-click"></i>
-        <span>Events</span>
-      </a>
-      <a class="sb-item" [class.has-errors]="+(stats()?.total_errors || 0) > 0"
-         routerLink="/monitoring">
+      </div>
+      <div class="sb-item" [class.active]="activeView() === 'errors'"
+           (click)="setView('errors')">
         <i class="ti ti-alert-triangle"></i>
         <span>Errors</span>
         @if (+(stats()?.total_errors || 0) > 0) {
           <span class="sb-badge red">{{ stats()?.total_errors }}</span>
         }
-      </a>
+      </div>
     </nav>
 
     <div class="sb-apps">
-      <div class="sb-section">Apps</div>
-      <div class="sb-app-row">
+      <div class="sb-section">Filter by App</div>
+      <div class="sb-app-row" [class.active-app]="selectedApp() === ''"
+           (click)="setFilter('')">
+        <div class="app-dot" style="background:#6b7280"></div>
+        <span>All Apps</span>
+        <span class="app-count">{{ total() }}</span>
+      </div>
+      <div class="sb-app-row" [class.active-app]="selectedApp() === 'Portfolio'"
+           (click)="setFilter('Portfolio')">
         <div class="app-dot blue"></div>
         <span>Portfolio</span>
         <span class="app-count">{{ stats()?.portfolio_sessions || 0 }}</span>
       </div>
-      <div class="sb-app-row">
+      <div class="sb-app-row" [class.active-app]="selectedApp() === 'FreeFlix'"
+           (click)="setFilter('FreeFlix')">
         <div class="app-dot purple"></div>
         <span>FreeFlix</span>
         <span class="app-count">{{ stats()?.freeflix_sessions || 0 }}</span>
       </div>
-      <div class="sb-app-row">
+      <div class="sb-app-row" [class.active-app]="selectedApp() === 'RAG'"
+           (click)="setFilter('RAG')">
         <div class="app-dot teal"></div>
         <span>RAG</span>
         <span class="app-count">{{ stats()?.rag_sessions || 0 }}</span>
+      </div>
+      <div class="sb-app-row" [class.active-app]="selectedApp() === 'Monitoring'"
+           (click)="setFilter('Monitoring')">
+        <div class="app-dot" style="background:#f9e2af"></div>
+        <span>Monitoring</span>
+        <span class="app-count">{{ stats()?.monitoring_sessions || 0 }}</span>
       </div>
     </div>
   </aside>
@@ -58,8 +71,8 @@
     <!-- Top bar -->
     <div class="topbar">
       <div>
-        <div class="tb-title">Overview</div>
-        <div class="tb-sub">shivamsingh.website · all apps</div>
+        <div class="tb-title">{{ viewTitle() }}</div>
+        <div class="tb-sub">shivamsingh.website · {{ selectedApp() || 'all apps' }}</div>
       </div>
       <div class="tb-right">
         <a href="/" class="tb-btn">← portfolio</a>
@@ -72,194 +85,190 @@
 
     <div class="content">
 
-      <!-- KPI cards -->
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-label">
-            <i class="ti ti-users"></i> Sessions
+      <!-- KPI cards — only on overview -->
+      @if (activeView() === 'overview') {
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label"><i class="ti ti-users"></i> Sessions</div>
+            <div class="kpi-value">{{ stats()?.total_sessions || 0 }}</div>
+            <div class="kpi-trend green">↑ capturing live</div>
           </div>
-          <div class="kpi-value">{{ stats()?.total_sessions || 0 }}</div>
-          <div class="kpi-trend green">↑ capturing live</div>
+          <div class="kpi-card">
+            <div class="kpi-label"><i class="ti ti-click"></i> Total clicks</div>
+            <div class="kpi-value">{{ stats()?.total_clicks || 0 }}</div>
+            <div class="kpi-sub">across all apps</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label"><i class="ti ti-clock"></i> Avg duration</div>
+            <div class="kpi-value">{{ avgDuration() }}</div>
+            <div class="kpi-sub">per session</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label"><i class="ti ti-alert-circle"></i> Errors</div>
+            <div class="kpi-value" [class.red]="+(stats()?.total_errors || 0) > 0">
+              {{ stats()?.total_errors || 0 }}
+            </div>
+            @if (+(stats()?.total_errors || 0) === 0) {
+              <div class="kpi-trend green">All clear</div>
+            } @else {
+              <div class="kpi-trend red">Needs attention</div>
+            }
+          </div>
         </div>
-        <div class="kpi-card">
-          <div class="kpi-label">
-            <i class="ti ti-click"></i> Total clicks
-          </div>
-          <div class="kpi-value">{{ stats()?.total_clicks || 0 }}</div>
-          <div class="kpi-sub">across all apps</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">
-            <i class="ti ti-clock"></i> Avg duration
-          </div>
-          <div class="kpi-value">{{ avgDuration() }}</div>
-          <div class="kpi-sub">per session</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">
-            <i class="ti ti-alert-circle"></i> Errors
-          </div>
-          <div class="kpi-value" [class.red]="+(stats()?.total_errors || 0) > 0">
-            {{ stats()?.total_errors || 0 }}
-          </div>
-          @if (+(stats()?.total_errors || 0) === 0) {
-            <div class="kpi-trend green">All clear</div>
-          } @else {
-            <div class="kpi-trend red">Needs attention</div>
-          }
-        </div>
-      </div>
 
-      <!-- Middle row -->
-      <div class="mid-row">
+        <!-- Middle row -->
+        <div class="mid-row">
+          <div class="table-card">
+            <div class="card-header">
+              <div class="card-title">Recent sessions</div>
+              <button class="card-refresh" (click)="loadAll()">
+                <i class="ti ti-refresh"></i> Refresh
+              </button>
+            </div>
+            <ng-container *ngTemplateOutlet="sessionTable"></ng-container>
+          </div>
 
-        <!-- Session table card -->
+          <div class="dist-card">
+            <div class="dist-title">Sessions by app</div>
+            @if (stats()) {
+              <div class="dist-rows">
+                @for (app of appDist(); track app.name) {
+                  <div class="dist-row">
+                    <div class="dist-top">
+                      <span>{{ app.name }}</span>
+                      <span class="dist-n">{{ app.count }}</span>
+                    </div>
+                    <div class="dist-bar-wrap">
+                      <div class="dist-bar" [class]="app.color"
+                           [style.width]="barWidth(app.count)"></div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+
+            <div class="dist-divider"></div>
+
+            <div class="dist-stats">
+              <div class="ds-row">
+                <span class="ds-label">Total navigations</span>
+                <span class="ds-val">{{ stats()?.total_navigations || 0 }}</span>
+              </div>
+              <div class="ds-row">
+                <span class="ds-label">Total clicks</span>
+                <span class="ds-val">{{ stats()?.total_clicks || 0 }}</span>
+              </div>
+              <div class="ds-row">
+                <span class="ds-label">Avg duration</span>
+                <span class="ds-val">{{ avgDuration() }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Sessions view -->
+      @if (activeView() === 'sessions') {
         <div class="table-card">
           <div class="card-header">
-            <div class="card-title">Recent sessions</div>
+            <div class="card-title">All sessions</div>
             <button class="card-refresh" (click)="loadAll()">
               <i class="ti ti-refresh"></i> Refresh
             </button>
           </div>
-
-          <!-- Filter tabs -->
-          <div class="filter-tabs">
-            @for (app of apps; track app.value) {
-              <button class="ftab"
-                      [class.on]="selectedApp() === app.value && !errorsOnly()"
-                      [class]="'ftab ftab-' + app.value.toLowerCase()"
-                      (click)="setFilter(app.value); errorsOnly.set(false)">
-                {{ app.label }}
-              </button>
-            }
-            <button class="ftab ftab-error"
-                    [class.on]="errorsOnly()"
-                    (click)="toggleErrors()">
-              <i class="ti ti-alert-triangle" style="font-size:11px"></i>
-              Errors only
-            </button>
-            <span class="tab-count">{{ total() }} sessions</span>
-          </div>
-
-          <!-- Table -->
-          @if (isLoading()) {
-            <div class="tbl-loading">
-              <div class="spin"></div>
-              <span>Loading sessions...</span>
-            </div>
-          } @else if (sessions().length === 0) {
-            <div class="tbl-empty">
-              <i class="ti ti-inbox" style="font-size:32px;color:var(--color-text-secondary)"></i>
-              <div>No sessions found</div>
-              <div style="font-size:12px;color:var(--color-text-secondary)">Browse your apps to start capturing</div>
-            </div>
-          } @else {
-            <div class="tbl-wrap">
-              <table class="stbl">
-                <thead>
-                  <tr>
-                    <th>App</th>
-                    <th>Session ID</th>
-                    <th>Browser</th>
-                    <th>Started</th>
-                    <th>Duration</th>
-                    <th>Pages</th>
-                    <th>Clicks</th>
-                    <th>Errors</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (s of sessions(); track s.id; let i = $index) {
-                    <tr class="srow" (click)="openSession(s.id)"
-                        [style.animation-delay]="(i * 0.06) + 's'">
-                      <td>
-                        <span class="apill" [class]="'apill-' + s.app.toLowerCase()">
-                          {{ s.app }}
-                        </span>
-                      </td>
-                      <td class="mono-sm">{{ s.id.slice(0,8) }}...</td>
-                      <td class="text-sm">{{ getBrowser(s.user_agent) }}</td>
-                      <td class="text-sm">{{ formatTime(s.started_at) }}</td>
-                      <td class="mono-sm">{{ formatDuration(s.duration_ms) }}</td>
-                      <td class="center">{{ s.page_count }}</td>
-                      <td class="center bold">{{ s.click_count }}</td>
-                      <td class="center" [class.err-cell]="s.error_count > 0">
-                        {{ s.error_count }}
-                      </td>
-                      <td>
-                        <button class="replay-btn"
-                                (click)="openSession(s.id); $event.stopPropagation()">
-                          <i class="ti ti-player-play" style="font-size:11px"></i>
-                          Replay
-                        </button>
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          }
+          <ng-container *ngTemplateOutlet="sessionTable"></ng-container>
         </div>
+      }
 
-        <!-- Distribution card -->
-        <div class="dist-card">
-          <div class="dist-title">Sessions by app</div>
-          @if (stats()) {
-            <div class="dist-rows">
-              <div class="dist-row">
-                <div class="dist-top">
-                  <span>Portfolio</span>
-                  <span class="dist-n">{{ stats()!.portfolio_sessions }}</span>
-                </div>
-                <div class="dist-bar-wrap">
-                  <div class="dist-bar blue"
-                       [style.width]="barWidth(stats()!.portfolio_sessions)"></div>
-                </div>
-              </div>
-              <div class="dist-row">
-                <div class="dist-top">
-                  <span>FreeFlix</span>
-                  <span class="dist-n">{{ stats()!.freeflix_sessions }}</span>
-                </div>
-                <div class="dist-bar-wrap">
-                  <div class="dist-bar purple"
-                       [style.width]="barWidth(stats()!.freeflix_sessions)"></div>
-                </div>
-              </div>
-              <div class="dist-row">
-                <div class="dist-top">
-                  <span>RAG</span>
-                  <span class="dist-n">{{ stats()!.rag_sessions }}</span>
-                </div>
-                <div class="dist-bar-wrap">
-                  <div class="dist-bar teal"
-                       [style.width]="barWidth(stats()!.rag_sessions)"></div>
-                </div>
-              </div>
-            </div>
-          }
-
-          <div class="dist-divider"></div>
-
-          <div class="dist-stats">
-            <div class="ds-row">
-              <span class="ds-label">Total navigations</span>
-              <span class="ds-val">{{ stats()?.total_navigations || 0 }}</span>
-            </div>
-            <div class="ds-row">
-              <span class="ds-label">Total clicks</span>
-              <span class="ds-val">{{ stats()?.total_clicks || 0 }}</span>
-            </div>
-            <div class="ds-row">
-              <span class="ds-label">Avg duration</span>
-              <span class="ds-val">{{ avgDuration() }}</span>
-            </div>
+      <!-- Errors view -->
+      @if (activeView() === 'errors') {
+        <div class="table-card">
+          <div class="card-header">
+            <div class="card-title">Sessions with errors</div>
           </div>
+          <ng-container *ngTemplateOutlet="sessionTable"></ng-container>
         </div>
-
-      </div>
+      }
 
     </div>
   </div>
 </div>
+
+<!-- Session table template -->
+<ng-template #sessionTable>
+  <div class="filter-tabs">
+    @for (app of apps; track app.value) {
+      <button class="ftab"
+              [class.on]="selectedApp() === app.value && !errorsOnly()"
+              (click)="setFilter(app.value); errorsOnly.set(false)">
+        {{ app.label }}
+      </button>
+    }
+    <button class="ftab ftab-error"
+            [class.on]="errorsOnly()"
+            (click)="toggleErrors()">
+      <i class="ti ti-alert-triangle" style="font-size:11px"></i>
+      Errors only
+    </button>
+    <span class="tab-count">{{ total() }} sessions</span>
+  </div>
+
+  @if (isLoading()) {
+    <div class="tbl-loading">
+      <div class="spin"></div>
+      <span>Loading sessions...</span>
+    </div>
+  } @else if (sessions().length === 0) {
+    <div class="tbl-empty">
+      <i class="ti ti-inbox" style="font-size:32px;color:var(--color-text-secondary)"></i>
+      <div>No sessions found</div>
+      <div style="font-size:12px;color:#9ca3af">Browse your apps to start capturing</div>
+    </div>
+  } @else {
+    <div class="tbl-wrap">
+      <table class="stbl">
+        <thead>
+          <tr>
+            <th>App</th>
+            <th>Session ID</th>
+            <th class="hide-mobile">Browser</th>
+            <th>Started</th>
+            <th>Duration</th>
+            <th class="hide-mobile">Pages</th>
+            <th>Clicks</th>
+            <th>Errors</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (s of sessions(); track s.id; let i = $index) {
+            <tr class="srow" (click)="openSession(s.id)"
+                [style.animation-delay]="(i * 0.06) + 's'">
+              <td>
+                <span class="apill" [class]="'apill-' + s.app.toLowerCase()">
+                  {{ s.app }}
+                </span>
+              </td>
+              <td class="mono-sm hide-mobile">{{ s.id.slice(0,8) }}...</td>
+              <td class="text-sm hide-mobile">{{ getBrowser(s.user_agent) }}</td>
+              <td class="text-sm">{{ formatTime(s.started_at) }}</td>
+              <td class="mono-sm">{{ formatDuration(s.duration_ms) }}</td>
+              <td class="center hide-mobile">{{ s.page_count }}</td>
+              <td class="center bold">{{ s.click_count }}</td>
+              <td class="center" [class.err-cell]="s.error_count > 0">
+                {{ s.error_count }}
+              </td>
+              <td>
+                <button class="replay-btn"
+                        (click)="openSession(s.id); $event.stopPropagation()">
+                  <i class="ti ti-player-play" style="font-size:11px"></i>
+                  Replay
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</ng-template>
