@@ -299,3 +299,164 @@
   .left-col { padding:16px; }
   .tb-chips { display:none; }
 }
+
+/* ── NAV PATH IMPROVED ── */
+.nav-flow {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 16px 20px;
+  flex-wrap: wrap;
+}
+
+.nav-step-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-step {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  background: #f3f4f6;
+  border: 1px solid #e8e9eb;
+  border-radius: 8px;
+  padding: 8px 12px;
+  min-width: 80px;
+  max-width: 140px;
+  transition: all 0.15s;
+
+  &:hover { border-color: #185FA5; background: #EFF6FF; }
+
+  &.nav-portfolio { border-left: 3px solid #378ADD; }
+  &.nav-freeflix  { border-left: 3px solid #7F77DD; }
+  &.nav-rag       { border-left: 3px solid #1D9E75; }
+  &.nav-monitoring{ border-left: 3px solid #f9e2af; }
+  &.first         { background: #EFF6FF; border-color: #85B7EB; }
+}
+
+.nav-step-top {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.nav-path { font-family: var(--font-mono); font-size: 11px; }
+
+.nav-step-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.nav-app-tag {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: #e8e9eb;
+  color: #6b7280;
+}
+
+.nav-time { font-size: 9px; color: #9ca3af; font-family: var(--font-mono); }
+
+.nav-arr { color: #d1d5db; }
+
+/* ── CLICK MAP IMPROVED ── */
+.click-dot {
+  position: absolute;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: rgba(24,95,165,0.5);
+  border: 2px solid rgba(24,95,165,0.9);
+  transform: translate(-50%,-50%);
+  cursor: pointer;
+  transition: transform .15s;
+  z-index: 1;
+
+  &:hover {
+    transform: translate(-50%,-50%) scale(1.5);
+    z-index: 10;
+    .click-tooltip { display: block; }
+  }
+}
+
+.click-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a2e;
+  color: white;
+  border-radius: 6px;
+  padding: 8px 10px;
+  width: 180px;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%; left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #1a1a2e;
+  }
+}
+
+.ct-num { font-size: 10px; color: #9ca3af; margin-bottom: 3px; }
+.ct-target { font-size: 11px; color: white; word-break: break-all; margin-bottom: 3px; }
+.ct-coords { font-size: 10px; color: #89b4fa; }
+.ct-time { font-size: 10px; color: #9ca3af; }
+
+/* ── CLICK LIST ── */
+.click-list {
+  border-top: 1px solid #f3f4f6;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.click-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 16px;
+  border-bottom: 0.5px solid #f9fafb;
+  font-size: 11px;
+
+  &:hover { background: #f9fafb; }
+  &:last-child { border-bottom: none; }
+}
+
+.cl-num { color: #9ca3af; width: 28px; flex-shrink: 0; }
+.cl-target { flex: 1; color: #374151; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cl-coords { color: #185FA5; flex-shrink: 0; }
+.cl-time { color: #9ca3af; flex-shrink: 0; }
+
+/* ── EVENT LIST IMPROVEMENTS ── */
+.ev-type-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.ev-app-badge {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 500;
+
+  &.eba-portfolio  { background: #E6F1FB; color: #0C447C; }
+  &.eba-freeflix   { background: #EEEDFE; color: #3C3489; }
+  &.eba-rag        { background: #EAF3DE; color: #27500A; }
+  &.eba-monitoring { background: #FAEEDA; color: #633806; }
+}
+
+.nav-target { color: #185FA5 !important; font-weight: 500; }
+.ev-coords { font-size: 10px; color: #9ca3af; margin-top: 1px; }

@@ -34,27 +34,13 @@
         </div>
       </div>
       <div class="tb-chips">
-        <div class="chip">
-          <i class="ti ti-clock"></i>
-          {{ formatDuration(session()!.duration_ms) }}
-        </div>
-        <div class="chip">
-          <i class="ti ti-click"></i>
-          {{ session()!.click_count }} clicks
-        </div>
-        <div class="chip">
-          <i class="ti ti-map-pin"></i>
-          {{ session()!.page_count }} pages
-        </div>
+        <div class="chip"><i class="ti ti-clock"></i>{{ formatDuration(session()!.duration_ms) }}</div>
+        <div class="chip"><i class="ti ti-click"></i>{{ session()!.click_count }} clicks</div>
+        <div class="chip"><i class="ti ti-map-pin"></i>{{ session()!.page_count }} pages</div>
         @if (session()!.error_count === 0) {
-          <div class="chip success">
-            <i class="ti ti-check"></i> No errors
-          </div>
+          <div class="chip success"><i class="ti ti-check"></i> No errors</div>
         } @else {
-          <div class="chip danger">
-            <i class="ti ti-alert-circle"></i>
-            {{ session()!.error_count }} errors
-          </div>
+          <div class="chip danger"><i class="ti ti-alert-circle"></i>{{ session()!.error_count }} errors</div>
         }
       </div>
     </div>
@@ -79,17 +65,15 @@
               }
             </div>
           </div>
-
           <div class="tl-track">
             @for (e of events(); track e.id) {
               <div class="tl-dot"
                    [style.left]="dotLeft(e.ts) + '%'"
                    [style.background]="dotColor(e.type)"
-                   [title]="e.type + ': ' + (e.target || '')">
+                   [title]="e.type + (e.target ? ': ' + e.target : '')">
               </div>
             }
           </div>
-
           <div class="tl-labels">
             @for (label of timeLabels(); track label) {
               <span>{{ label }}</span>
@@ -97,44 +81,75 @@
           </div>
         </div>
 
-        <!-- Navigation path -->
+        <!-- Navigation path — improved -->
         @if (navEvents().length > 0) {
           <div class="section-card">
             <div class="card-header">
               <div class="card-title">Navigation path</div>
-              <div class="card-count">{{ navEvents().length }} pages</div>
+              <div class="card-count">{{ navEvents().length }} navigations</div>
             </div>
             <div class="nav-flow">
-              @for (e of navEvents(); track e.id; let last = $last) {
-                <div class="nav-step" [class.first]="$first">
-                  <i class="ti" [class]="$first ? 'ti-home' : 'ti-arrow-right'"
-                     style="font-size:11px"></i>
-                  <span>{{ e.target || '/' }}</span>
+              @for (e of navEvents(); track e.id; let last = $last; let i = $index) {
+                <div class="nav-step-wrap">
+                  <div class="nav-step" [class.first]="$first"
+                       [class.nav-portfolio]="e.value?.app === 'Portfolio'"
+                       [class.nav-freeflix]="e.value?.app === 'FreeFlix'"
+                       [class.nav-rag]="e.value?.app === 'RAG'"
+                       [class.nav-monitoring]="e.value?.app === 'Monitoring'">
+                    <div class="nav-step-top">
+                      <i class="ti" [class]="getNavIcon(e.target)" style="font-size:11px"></i>
+                      <span class="nav-path">{{ formatPath(e.target) }}</span>
+                    </div>
+                    <div class="nav-step-meta">
+                      <span class="nav-app-tag">{{ e.value?.app || 'Portfolio' }}</span>
+                      <span class="nav-time">{{ formatTs(e.ts) }}</span>
+                    </div>
+                  </div>
+                  @if (!last) {
+                    <div class="nav-arr">
+                      <i class="ti ti-arrow-right" style="font-size:12px"></i>
+                    </div>
+                  }
                 </div>
-                @if (!last) {
-                  <div class="nav-arr">→</div>
-                }
               }
             </div>
           </div>
         }
 
-        <!-- Click map -->
+        <!-- Click map — improved -->
         @if (clickEvents().length > 0) {
           <div class="section-card">
             <div class="card-header">
               <div class="card-title">Click map</div>
-              <div class="card-count">{{ clickEvents().length }} clicks</div>
+              <div class="card-count">{{ clickEvents().length }} clicks · hover for details</div>
             </div>
             <div class="click-map">
               <div class="screen-frame">
                 <div class="screen-label mono">{{ session()!.screen_w }}×{{ session()!.screen_h }}</div>
               </div>
-              @for (e of clickEvents(); track e.id) {
+              @for (e of clickEvents(); track e.id; let i = $index) {
                 <div class="click-dot"
                      [style.left]="clickX(e) + '%'"
                      [style.top]="clickY(e) + '%'"
-                     [title]="e.target || ''">
+                     [class.has-target]="!!e.target">
+                  <div class="click-tooltip">
+                    <div class="ct-num">#{{ i + 1 }}</div>
+                    <div class="ct-target">{{ e.target || 'unknown element' }}</div>
+                    <div class="ct-coords mono">{{ e.x }}, {{ e.y }}px</div>
+                    <div class="ct-time mono">{{ formatTs(e.ts) }}</div>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Click list below map -->
+            <div class="click-list">
+              @for (e of clickEvents(); track e.id; let i = $index) {
+                <div class="click-list-item">
+                  <span class="cl-num mono">#{{ i + 1 }}</span>
+                  <span class="cl-target">{{ e.target || 'unknown' }}</span>
+                  <span class="cl-coords mono">{{ e.x }}, {{ e.y }}</span>
+                  <span class="cl-time mono">{{ formatTs(e.ts) }}</span>
                 </div>
               }
             </div>
@@ -172,15 +187,28 @@
                 <i class="ti" [class]="dotIcon(e.type)"></i>
               </div>
               <div class="ev-info">
-                <div class="ev-type">{{ e.type }}</div>
-                @if (e.target) {
+                <div class="ev-type-row">
+                  <span class="ev-type">{{ e.type }}</span>
+                  @if (e.type === 'nav') {
+                    <span class="ev-app-badge"
+                          [class]="'eba-' + (e.value?.app || 'portfolio').toLowerCase()">
+                      {{ e.value?.app || 'Portfolio' }}
+                    </span>
+                  }
+                </div>
+                @if (e.type === 'nav') {
+                  <div class="ev-target nav-target">{{ e.target || '/' }}</div>
+                } @else if (e.target) {
                   <div class="ev-target">{{ e.target }}</div>
+                }
+                @if (e.type === 'scroll' && e.value?.depth !== undefined) {
+                  <div class="ev-target">{{ e.value.depth }}% scroll depth</div>
+                }
+                @if (e.type === 'click' && e.x !== null) {
+                  <div class="ev-coords mono">{{ e.x }}, {{ e.y }}px</div>
                 }
                 @if (e.type === 'error' && e.value?.message) {
                   <div class="ev-error-msg">{{ e.value.message }}</div>
-                }
-                @if (e.type === 'scroll' && e.value?.depth !== undefined) {
-                  <div class="ev-target">{{ e.value.depth }}% depth</div>
                 }
               </div>
               <div class="ev-ts mono">{{ formatTs(e.ts) }}</div>
@@ -188,7 +216,7 @@
           }
 
           @if (filteredEvents().length === 0) {
-            <div class="ev-empty">No {{ activeFilter() }} events in this session</div>
+            <div class="ev-empty">No {{ activeFilter() }} events</div>
           }
         </div>
       </div>

@@ -15,10 +15,10 @@ export class SessionDetailComponent implements OnInit {
   private router = inject(Router);
   private svc    = inject(MonitoringService);
 
-  session  = signal<MonSession | null>(null);
-  events   = signal<MonEvent[]>([]);
+  session   = signal<MonSession | null>(null);
+  events    = signal<MonEvent[]>([]);
   isLoading = signal(true);
-  activeFilter = signal<'all' | 'click' | 'nav' | 'scroll' | 'error'>('all');
+  activeFilter = signal<'all'|'click'|'nav'|'scroll'|'error'>('all');
 
   filteredEvents = computed(() => {
     const f = this.activeFilter();
@@ -50,11 +50,10 @@ export class SessionDetailComponent implements OnInit {
 
   goBack() { this.router.navigate(['/monitoring']); }
 
-  setFilter(f: 'all' | 'click' | 'nav' | 'scroll' | 'error') {
+  setFilter(f: 'all'|'click'|'nav'|'scroll'|'error') {
     this.activeFilter.set(f);
   }
 
-  // Timeline position as percentage
   dotLeft(ts: number): number {
     return Math.min(Math.round((ts / this.totalMs()) * 100), 99);
   }
@@ -84,11 +83,29 @@ export class SessionDetailComponent implements OnInit {
     return classes[type] || 'ic-dom';
   }
 
+  // Format path nicely
+  formatPath(path: string): string {
+    if (!path || path === '/') return 'Home';
+    const parts = path.split('/').filter(Boolean);
+    if (parts.length === 0) return 'Home';
+    if (parts.length === 1) return '/' + parts[0];
+    return '/' + parts.join('/');
+  }
+
+  // Get icon for nav path
+  getNavIcon(path: string): string {
+    if (!path || path === '/') return 'ti-home';
+    if (path.includes('freeflix')) return 'ti-device-tv';
+    if (path.includes('rag')) return 'ti-brain';
+    if (path.includes('monitoring')) return 'ti-activity';
+    return 'ti-arrow-right';
+  }
+
   formatTs(ts: number): string {
     const base = this.events()[0]?.ts || 0;
     const diff = Math.round((ts - base) / 1000);
-    const m = Math.floor(diff / 60);
-    const s = diff % 60;
+    const m = Math.floor(Math.abs(diff) / 60);
+    const s = Math.abs(diff) % 60;
     return `${m}:${String(s).padStart(2, '0')}`;
   }
 
@@ -113,7 +130,6 @@ export class SessionDetailComponent implements OnInit {
     return 'Unknown';
   }
 
-  // Click map — normalize x/y to percentage of screen
   clickX(e: MonEvent): number {
     return Math.round(((e.x || 0) / (this.session()?.screen_w || 1920)) * 100);
   }
