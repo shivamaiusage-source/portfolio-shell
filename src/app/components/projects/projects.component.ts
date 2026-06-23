@@ -15,6 +15,7 @@ interface Project {
   iconBg: string;
   iconColor: string;
   tiIcon: string;
+  logo?: string;
 }
 
 @Component({
@@ -24,10 +25,7 @@ interface Project {
   styleUrl: './projects.component.scss'
 })
 export class ProjectsComponent {
-
   private router = inject(Router);
-
-  // Track which cards are flipped (for mobile tap support)
   flippedCards = new Set<string>();
 
   projects: Project[] = [
@@ -41,10 +39,11 @@ export class ProjectsComponent {
       url: 'shivamsingh.website/freeflix',
       live: true,
       emoji: '🎬',
-      accentColor: '#f38ba8',
-      iconBg: '#FCEBEB',
-      iconColor: '#A32D2D',
-      tiIcon: 'ti-device-tv'
+      accentColor: '#E50914',
+      iconBg: '#000000',
+      iconColor: '#E50914',
+      tiIcon: 'ti-device-tv',
+      logo: '/freeflix-logo.jpeg'
     },
     {
       name: 'RAG System',
@@ -56,17 +55,18 @@ export class ProjectsComponent {
       url: 'shivamsingh.website/rag',
       live: true,
       emoji: '🤖',
-      accentColor: '#a6e3a1',
-      iconBg: '#E1F5EE',
-      iconColor: '#0F6E56',
-      tiIcon: 'ti-brain'
+      accentColor: '#A32D2D',
+      iconBg: '#A32D2D',
+      iconColor: '#ffffff',
+      tiIcon: 'ti-brain',
+      logo: '/rag-logo.png'
     },
     {
       name: 'Monitoring',
       slug: 'monitoring',
       tagline: 'Framework-agnostic session recorder — clicks, navigation, errors. Replay dashboard.',
       desc: 'Vanilla JS recorder injected via script tag. Captures clicks, scroll, navigation and JS errors. Angular dashboard with session replay and event timeline.',
-      tech: ['Vanilla JS', 'Angular 19', 'Node.js', 'PostgreSQL', 'pgvector'],
+      tech: ['Vanilla JS', 'Angular 19', 'Node.js', 'PostgreSQL'],
       route: '/monitoring',
       url: 'shivamsingh.website/monitoring',
       live: true,
@@ -74,7 +74,8 @@ export class ProjectsComponent {
       accentColor: '#89b4fa',
       iconBg: '#E6F1FB',
       iconColor: '#185FA5',
-      tiIcon: 'ti-activity'
+      tiIcon: 'ti-activity',
+      logo: '/monitoring-logo.png'
     },
     {
       name: 'Coming Soon',
@@ -93,7 +94,6 @@ export class ProjectsComponent {
     }
   ];
 
-  // Toggle flip state — used for mobile tap
   toggleFlip(slug: string): void {
     if (this.flippedCards.has(slug)) {
       this.flippedCards.delete(slug);
@@ -106,9 +106,8 @@ export class ProjectsComponent {
     return this.flippedCards.has(slug);
   }
 
-  // Navigate to project — only for live projects
   openProject(event: Event, project: Project): void {
-    event.stopPropagation(); // prevent card flip when clicking button
+    event.stopPropagation();
     if (project.live) {
       this.router.navigate([project.route]);
     }

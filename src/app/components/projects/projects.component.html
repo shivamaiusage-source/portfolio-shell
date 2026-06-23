@@ -23,18 +23,21 @@
 
           <div class="flip-inner">
 
-            <!-- FRONT — summary -->
+            <!-- FRONT -->
             <div class="flip-front">
-
-              <!-- Top accent bar -->
               <div class="flip-accent" [style.background]="p.accentColor"></div>
 
-              <!-- Icon -->
-              <div class="flip-icon-wrap"
-                   [style.background]="p.iconBg">
-                <i class="ti {{ p.tiIcon }}"
-                   [style.color]="p.iconColor"
-                   aria-hidden="true"></i>
+              <!-- Logo image if available, else icon -->
+              <div class="flip-icon-wrap" [style.background]="p.iconBg">
+                @if (p.logo) {
+                  <img [src]="p.logo"
+                       [alt]="p.name + ' logo'"
+                       class="flip-logo-img" />
+                } @else {
+                  <i class="ti {{ p.tiIcon }}"
+                     [style.color]="p.iconColor"
+                     aria-hidden="true"></i>
+                }
               </div>
 
               <!-- Status -->
@@ -51,23 +54,27 @@
                 }
               </div>
 
-              <!-- Name + tagline -->
               <h3 class="flip-name">{{ p.name }}</h3>
               <p class="flip-tagline">{{ p.tagline }}</p>
 
-              <!-- Hint -->
               <div class="flip-hint mono">
                 <i class="ti ti-refresh" aria-hidden="true"></i>
                 flip for details
               </div>
-
             </div>
 
-            <!-- BACK — details -->
+            <!-- BACK -->
             <div class="flip-back">
-
-              <!-- Top accent bar -->
               <div class="flip-accent" [style.background]="p.accentColor"></div>
+
+              <!-- Small logo on back -->
+              @if (p.logo) {
+                <div class="flip-back-logo-wrap" [style.background]="p.iconBg">
+                  <img [src]="p.logo"
+                       [alt]="p.name + ' logo'"
+                       class="flip-back-logo" />
+                </div>
+              }
 
               <h3 class="flip-back-name">{{ p.name }}</h3>
               <p class="flip-back-desc">{{ p.desc }}</p>
@@ -79,10 +86,8 @@
                 }
               </div>
 
-              <!-- URL -->
               <div class="flip-url mono">{{ p.url }}</div>
 
-              <!-- CTA -->
               @if (p.live) {
                 <button
                   class="flip-cta"
@@ -97,7 +102,6 @@
                   Coming soon
                 </div>
               }
-
             </div>
 
           </div>

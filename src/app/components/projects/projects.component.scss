@@ -252,3 +252,30 @@
   .projects-grid { grid-template-columns: 1fr; }
   .flip-wrap { height: 190px; }
 }
+/* ── PROJECT LOGOS ── */
+.flip-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+.flip-back-logo-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.flip-back-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Make icon wrap bigger for logos */
+.flip-icon-wrap {
+  overflow: hidden;
+}
