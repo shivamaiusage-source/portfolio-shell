@@ -43,7 +43,7 @@ export class ProjectsComponent {
       iconBg: '#000000',
       iconColor: '#E50914',
       tiIcon: 'ti-device-tv',
-      logo: '/freeflix-logo.jpeg'
+      logo: '/freeflix.jpeg'
     },
     {
       name: 'RAG System',
@@ -59,7 +59,7 @@ export class ProjectsComponent {
       iconBg: '#A32D2D',
       iconColor: '#ffffff',
       tiIcon: 'ti-brain',
-      logo: '/rag-logo.png'
+      logo: '/RAG.png'
     },
     {
       name: 'Monitoring',
@@ -75,7 +75,7 @@ export class ProjectsComponent {
       iconBg: '#E6F1FB',
       iconColor: '#185FA5',
       tiIcon: 'ti-activity',
-      logo: '/monitoring-logo.png'
+      logo: '/Monitoring.png'
     },
     {
       name: 'Coming Soon',
