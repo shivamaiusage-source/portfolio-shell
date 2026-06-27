@@ -84,7 +84,7 @@ export class SessionDetailComponent implements OnInit {
   }
 
   // Format path nicely
-  formatPath(path: string): string {
+  formatPath(path: string | null): string {
     if (!path || path === '/') return 'Home';
     const parts = path.split('/').filter(Boolean);
     if (parts.length === 0) return 'Home';
@@ -93,7 +93,7 @@ export class SessionDetailComponent implements OnInit {
   }
 
   // Get icon for nav path
-  getNavIcon(path: string): string {
+  getNavIcon(path: string | null): string {
     if (!path || path === '/') return 'ti-home';
     if (path.includes('freeflix')) return 'ti-device-tv';
     if (path.includes('rag')) return 'ti-brain';
